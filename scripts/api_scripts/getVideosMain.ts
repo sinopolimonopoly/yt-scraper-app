@@ -11,6 +11,7 @@ async function main() {
 
     const videoIds = await getVideoIds(playlistIds)
 
+    console.log(videoIds)
 }
 
 main()

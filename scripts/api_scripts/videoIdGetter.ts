@@ -22,14 +22,16 @@ export async function getVideoIds(
 
     let videoIds = createDefaultDict<string[]>(() => []);
 
-    let nextPageToken = null;
+    
 
     for (const [vidType, playlist] of Object.entries(playlistIds)) {
-        let typeIds = [];
+        let typeIds = []; 
+        let nextPageToken = null;  
+
         while (true) {
             let url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=${maxResults}&playlistId=${playlist}&key=${api_key}`;
 
-            if (Boolean(nextPageToken)) {
+            if (nextPageToken) {
                 url += `&pageToken=${nextPageToken}`;
             }
 
@@ -37,14 +39,7 @@ export async function getVideoIds(
             const data = await res.json();
 
             if ("error" in data) {
-                let currentType = (
-                    vidType == "videos" ? "Videos" :
-                    vidType == "shorts" ? "Shorts" :
-                    vidType == "livestreams" ? "Livestreams":
-                    "INVALID VIDEO TYPE"
-                )
-                console.log(`${vidType} | Can't retrieve ${currentType}. Desired playlist may be empty.`);
-
+                console.log(`${vidType} | Can't retrieve ${vidType}. Desired playlist may be empty.`);
                 break;
             }
 
@@ -54,24 +49,23 @@ export async function getVideoIds(
 
                     let thumbnailUrl = item.snippet.thumbnails.default.url  
 
-                    if ("default_live." in thumbnailUrl) {
+                    if (thumbnailUrl.includes("default_live.")) {
                         continue
                     }
                 }
                 
                 let videoId = item.snippet.resourceId.videoId
                 typeIds.push(videoId)
+                
             }
             
-            let nextPageToken = data.get('nextPageToken')
+            nextPageToken = data.nextPageToken
 
             if (!(nextPageToken)) {
                 break
             }
-
-        videoIds[vidType] = typeIds
-            
         }
+        videoIds[vidType] = typeIds
         
     }
 
