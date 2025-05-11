@@ -6,9 +6,9 @@ export function getPlaylistId(channelId: string, uploadType = "all"): {
     livestreams?: string;
 } {
     // Playlist Ids are same as channel ids with different prefixes
-    const longFormId = "UULF" + channelId.slice(2)
-    const shortsId = "UUSH" + channelId.slice(2)
-    const livestreamId = "UULV" + channelId.slice(2)
+    const longFormId = "UULF" + channelId.slice(2);
+    const shortsId = "UUSH" + channelId.slice(2);
+    const livestreamId = "UULV" + channelId.slice(2);
 
     // Return playlist Id(s) based on specified upload type 
     if (uploadType == "videos") {
