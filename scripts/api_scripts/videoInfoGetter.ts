@@ -45,10 +45,16 @@ export async function getVideoInfo(
                     let title = item.snippet.title; 
                     let uploadDate = item.snippet.publishedAt.slice(0, 10);
 
+                    let rawDuration: string;
+                    let processedDuration;
+
+                    let likeCount;
+                    let commentCount;
+
                     // Duration
                     if (item.snippet.liveBroadcastContent == "live") {
-                        let rawDuration = "Currently live";
-                        let processedDuration = "Currently live";
+                        rawDuration = "Currently live";
+                        processedDuration = "Currently live";
                     }
 
                     else if (item.snippet.liveBroadcastContent == "upcoming") {
@@ -56,39 +62,54 @@ export async function getVideoInfo(
                     }
 
                     else {
-                        let rawDuration = item.contentDetails.duration.replace("P","").replace("T","")
-                        let processedDuration = processDuration(rawDuration, item);
+                        rawDuration = item.contentDetails.duration.replace("P","").replace("T","")
+                        processedDuration = processDuration(rawDuration, item);
                     }
 
                     // Statistics
-                    let viewCount = item.statistics.viewCount
+                    let viewCount = Number(item.statistics.viewCount);
 
                     if ("likeCount" in item.statistics) {
-                        let likeCount = item.statistics.likeCount;
+                        likeCount = Number(item.statistics.likeCount);
                     }  
                     else {
-                        let likeCount = "Disabled";
+                        likeCount = "Disabled";
                     }
 
                     if ("commentCount" in item.statistics) {
-                        let commentCount = item.statistics.commentCount;
+                        commentCount = Number(item.statistics.commentCount);
                     }  
                     else {
-                        let commentCount = "Disabled";
+                        commentCount = "Disabled";
                     }
 
                     videos[videoId]["Title"] = title;
-                    videos[videoId]["Upload Date"] = uploadDate;
-                    videos[videoId]["Numeric Date"] = Number(uploadDate.replace("-", ""))
-                    
-                    
+                    videos[videoId]["UploadDate"] = uploadDate;
+                    videos[videoId]["NumericDate"] = Number(uploadDate.replaceAll("-", ""));
+                    let videoType = (
+                        vidType == "videos" ? "Long Form" :
+                        vidType == "shorts" ? "Short" :
+                        vidType == "livestreams" ? "Livestream" :
+                        null
+                    ) ;
+                    videos[videoId]["VideoType"] = videoType;
+
+                    videos[videoId]["Duration"] = rawDuration;
+                    videos[videoId]["ProcessedDuration"] = processedDuration;
+
+                    videos[videoId]["ViewCount"] = viewCount;
+                    videos[videoId]["LikeCount"] = likeCount;
+                    videos[videoId]["CommentCount"] = commentCount;
+                }
+
+                catch (error) {
+                    console.log("---------- Video Info Error -----------");
+                    console.error("Error retrieving video information", error);
+                    console.log(item);
                 }
             }
         }
-
-
     }
 
-
-    return videoInfo
+    return videos
 }
