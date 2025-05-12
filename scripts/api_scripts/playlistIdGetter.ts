@@ -16,11 +16,11 @@ export function getPlaylistId(channelId: string, uploadType = "all"): {
     }
 
     else if (uploadType == "shorts") {
-        return { videos: longFormId }
+        return { shorts: shortsId }
     }
 
     else if (uploadType == "livestreams") {
-        return { videos: longFormId }
+        return { livestreams: livestreamId }
     }
 
     else {
