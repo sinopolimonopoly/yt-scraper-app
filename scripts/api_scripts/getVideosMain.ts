@@ -14,7 +14,9 @@ async function main() {
 
     const videos = await getVideoInfo(videoIds);
 
-    console.log(videos);
+    const sortedEntries = Object.entries(videos).sort(([, a], [, b]) => b.NumericDate - a.NumericDate)
+
+    console.log(sortedEntries)
 }
 
 main()
