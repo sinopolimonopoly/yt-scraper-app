@@ -5,8 +5,8 @@ import { getVideoInfo } from "../apiScripts/videoInfoGetter";
 import { createVideoCsv } from "./csvMaker";
 
 async function main() {
-    const handle = "maxthemeatguy"
-    const uploadType = "shorts"
+    const handle = "curtisdoingthings"
+    const uploadType = "videos"
 
     const channelId = await getChannelId(handle)
 
