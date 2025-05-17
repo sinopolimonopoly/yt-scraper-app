@@ -1,8 +1,58 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { Button, Grid, Typography, TextField, Checkbox } from '@mui/material';
 import { FormControl, FormGroup, FormControlLabel } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Divider } from '@mui/material';
+
+import '@fontsource/roboto';
 
 export default function Menu() {
+    const [openConfirm, setOpenConfirm] = useState(false);
+    const [handle, setHandle] = useState("");
+    const [selectedTypes, setSelectedTypes] = useState({
+        long: false,
+        short: false,
+        live: false
+    });
+
+    const isFormValid = handle.trim() !== "" && Object.values(selectedTypes).some(Boolean);
+
+    const handleClickOpen = () => {
+        setOpenConfirm(true);
+    }
+
+    const handleClose = () => {
+        setOpenConfirm(false);
+    }
+
+    const runDaScript = () => {
+        console.log("Retrieving videos");
+
+        setOpenConfirm(false);
+    }
+
+    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSelectedTypes({
+            ...selectedTypes,
+            [event.target.name]: event.target.checked
+        });
+    };
+
+    const getSelectedTypes = () => {
+        const labels = {
+            long: 'Long Form',
+            short: 'Shorts',
+            live: 'Livestreams'
+        };
+
+        const selected = Object.entries(selectedTypes)
+            .filter(([_, isChecked]) => isChecked)
+            .map(([key]) => labels[key as keyof typeof labels]);
+        
+        return selected.join(' & ');
+    }
+
+
     return (
         <div>
             <Grid container spacing={3}>
@@ -16,31 +66,94 @@ export default function Menu() {
                         Enter a channel's handle and select which videos you'd like to retrieve
                     </Typography>
                 </Grid>
-                <Grid size={12}>
-                    <TextField fullWidth id="channel-handle" label="Outlined" variant="outlined"/>
+                <Grid size={12} justifyContent="center" display={"flex"}>
+                    <TextField fullWidth 
+                        id="channel-handle" 
+                        label="Handle" 
+                        variant="outlined"
+                        onChange={(e) => setHandle(e.target.value)}
+                        sx={{ width: '400px' }}
+                    />
                 </Grid>
-                <FormControl component="fieldset">
-                    <FormGroup aria-label="upload-type" row>
-                        <FormControlLabel
-                            value="bottom"
-                            control={<Checkbox />}
-                            label="Long Form"
-                            labelPlacement="bottom"
-                        />
-                        <FormControlLabel
-                            value="asdadsasd"
-                            control={<Checkbox />}
-                            label="Shorts"
-                            labelPlacement="bottom"
-                        />
-                        <FormControlLabel
-                            value="asdadsasd"
-                            control={<Checkbox />}
-                            label="Livestream"
-                            labelPlacement="bottom"
-                        />
-                    </FormGroup>
-                </FormControl>
+                <Grid size={12} container justifyContent="center">
+                    <FormControl component="fieldset">
+                        <FormGroup aria-label="upload-type" row sx={{ justifyContent: "center"}}>
+                            <FormControlLabel
+                                value="longs"
+                                control={<Checkbox checked={selectedTypes.long} onChange={handleCheckboxChange} name="long"/>}
+                                label="Long Form"
+                                labelPlacement="bottom"
+                                sx={{ alignItems: "center", margin: 2 }}
+                            />
+                            <FormControlLabel
+                                value="shorts"
+                                control={<Checkbox checked={selectedTypes.short} onChange={handleCheckboxChange} name="short"/>}
+                                label="Shorts"
+                                labelPlacement="bottom"
+                                sx={{ alignItems: "center", margin: 2 }}
+                            />
+                            <FormControlLabel
+                                value="livestreams"
+                                control={<Checkbox checked={selectedTypes.live} onChange={handleCheckboxChange} name="live"/>}
+                                label="Livestream"
+                                labelPlacement="bottom"
+                                sx={{ alignItems: "center", margin: 2 }}
+                            />
+                        </FormGroup>
+                    </FormControl>
+                </Grid>
+                <Grid size={12} container justifyContent="center" mt={2}>
+                    <Button variant="contained" color="primary" onClick={handleClickOpen}>
+                        Fetch Videos
+                    </Button>
+                </Grid>
+                
+                <Dialog 
+                    open={openConfirm} 
+                    onClose={handleClose}
+                    sx={{ '& .MuiDialogTitle-root, & .MuiDialogContent-root, & .MuiDialogActions-root': {
+                            fontFamily: 'Roboto, Arial, sans-serif',
+                        } 
+                    }}
+                >    
+                    <DialogTitle>Verify Request</DialogTitle>
+                        { isFormValid ? (
+                        <>
+                            <DialogContent>
+                                Are you sure you want to retrieve the following from channel @<strong>{handle}</strong>?
+                            </DialogContent>
+                            <Divider />
+                            <DialogContent>
+                                {getSelectedTypes()}
+                            </DialogContent>
+                        </>
+                        ) :
+                        <> 
+                            <DialogContent>
+                                Enter a YouTube channel handle and select an upload type to fetch results
+                            </DialogContent>
+                        </>
+                        }
+                    <DialogActions>
+                        { isFormValid ? (
+                            <>
+                                <Button onClick={() => setOpenConfirm(false)} color="error">
+                                    Cancel
+                                </Button>
+                                <Button onClick={runDaScript} color="primary">
+                                    Fetch Videos
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <Button onClick={() => setOpenConfirm(false)}>
+                                    Close
+                                </Button>
+                            </>
+                            )
+                        }
+                    </DialogActions>
+                </Dialog>
             </Grid>
         </div>
     )
