@@ -1,10 +1,10 @@
 import React from 'react';
-import Demo from './demo';
+import Menu from './Menu';
 
 export default function App(){
     return (
         <div>
-            <Demo/>
+            <Menu/>
         </div>
     );
 }
