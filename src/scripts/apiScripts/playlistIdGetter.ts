@@ -1,5 +1,9 @@
+import { createDefaultDict } from "../helpers/defaultdict";
+
+export type UploadType = "videos" | "shorts" | "livestreams";
+
 // No need for async or promise because no await within function
-export function getPlaylistId(channelId: string, uploadType = "all"): {
+export function getPlaylistId(channelId: string, uploadTypes: UploadType[]): {
     // Allowing for keys to be present or absent depending on parameter values
     videos?: string;
     shorts?: string;
@@ -10,24 +14,22 @@ export function getPlaylistId(channelId: string, uploadType = "all"): {
     const shortsId = "UUSH" + channelId.slice(2);
     const livestreamId = "UULV" + channelId.slice(2);
 
+    const playlistIdObject: Record<UploadType, string> = {
+        videos: longFormId,
+        shorts: shortsId,
+        livestreams: livestreamId
+    }
+
+    if (uploadTypes.length == 3) {
+        return playlistIdObject
+    }
+
+    const playlistIds = createDefaultDict<string>(() => "");
+
+    for (const vidType of uploadTypes) {
+        playlistIds[vidType] = playlistIdObject[vidType];
+    }
+
+    return playlistIds
     // Return playlist Id(s) based on specified upload type 
-    if (uploadType == "videos") {
-        return { videos: longFormId }
-    }
-
-    else if (uploadType == "shorts") {
-        return { shorts: shortsId }
-    }
-
-    else if (uploadType == "livestreams") {
-        return { livestreams: livestreamId }
-    }
-
-    else {
-        return {
-            videos: longFormId,
-            shorts: shortsId, 
-            livestreams: livestreamId
-        }
-    }
 }

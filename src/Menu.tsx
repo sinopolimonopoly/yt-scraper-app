@@ -6,6 +6,9 @@ import { Divider } from '@mui/material';
 
 import '@fontsource/roboto';
 
+import getVideos from './scripts/mainScripts/getVideosMainApp';
+import { UploadType } from './scripts/apiScripts/playlistIdGetter';
+
 export default function Menu() {
     const [openConfirm, setOpenConfirm] = useState(false);
     const [handle, setHandle] = useState("");
@@ -25,9 +28,11 @@ export default function Menu() {
         setOpenConfirm(false);
     }
 
-    const runDaScript = () => {
-        console.log("Retrieving videos");
+    const runDaScript = ( handle: string, selectedTypes: UploadType[]) => {
+        console.log(`Retrieving from channel: ${handle}`);
+        console.log(`Upload Types: ${selectedTypes}`)
 
+        getVideos(handle, selectedTypes);
         setOpenConfirm(false);
     }
 
@@ -40,16 +45,16 @@ export default function Menu() {
 
     const getSelectedTypes = () => {
         const labels = {
-            long: 'Long Form',
-            short: 'Shorts',
-            live: 'Livestreams'
+            long: 'videos',
+            short: 'shorts',
+            live: 'livestreams'
         };
 
         const selected = Object.entries(selectedTypes)
             .filter(([_, isChecked]) => isChecked)
             .map(([key]) => labels[key as keyof typeof labels]);
         
-        return selected.join(' & ');
+        return selected;
     }
 
 
@@ -95,7 +100,7 @@ export default function Menu() {
                             <FormControlLabel
                                 value="livestreams"
                                 control={<Checkbox checked={selectedTypes.live} onChange={handleCheckboxChange} name="live"/>}
-                                label="Livestream"
+                                label="Livestreams"
                                 labelPlacement="bottom"
                                 sx={{ alignItems: "center", margin: 2 }}
                             />
@@ -117,31 +122,33 @@ export default function Menu() {
                     }}
                 >    
                     <DialogTitle>Verify Request</DialogTitle>
-                        { isFormValid ? (
-                        <>
-                            <DialogContent>
-                                Are you sure you want to retrieve the following from channel @<strong>{handle}</strong>?
-                            </DialogContent>
-                            <Divider />
-                            <DialogContent>
-                                {getSelectedTypes()}
-                            </DialogContent>
-                        </>
-                        ) :
-                        <> 
-                            <DialogContent>
-                                Enter a YouTube channel handle and select an upload type to fetch results
-                            </DialogContent>
-                        </>
-                        }
+                    { isFormValid ? (
+                    <>
+                        <DialogContent>
+                            Are you sure you want to retrieve the following uploads from channel 
+                            <br />
+                            @<strong>{handle}</strong>?
+                        </DialogContent>
+                        <Divider />
+                        <DialogContent>
+                            {getSelectedTypes().join(' & ')}
+                        </DialogContent>
+                    </>
+                    ) :
+                    <> 
+                        <DialogContent>
+                            Enter a YouTube channel handle and select an upload type to fetch results
+                        </DialogContent>
+                    </>
+                    }
                     <DialogActions>
                         { isFormValid ? (
                             <>
                                 <Button onClick={() => setOpenConfirm(false)} color="error">
                                     Cancel
                                 </Button>
-                                <Button onClick={runDaScript} color="primary">
-                                    Fetch Videos
+                                <Button onClick={() => runDaScript(handle.trim(), getSelectedTypes())} color="primary">
+                                    Fetch Uploads
                                 </Button>
                             </>
                         ) : (

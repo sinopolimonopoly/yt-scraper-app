@@ -2,9 +2,9 @@ import * as fs from 'fs';
 
 const safeText = (text: any) => `"${String(text).replace(/"/g, '""')}"`;
 
-export function createVideoCsv(videos: Record<string, any>, handle: string, uploadType: string) {
+export function createVideoCsv(videos: Record<string, any>, handle: string) {
 
-    const filePath = `${handle}_${uploadType}_list.csv`
+    const filePath = `${handle}_output.csv`
 
     const headers = ["videoId", "Title", "UploadDate", "VideoType", "Duration", "DurationInS", "ViewCount", "LikeCount", "CommentCount"]
 
