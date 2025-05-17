@@ -6,15 +6,18 @@ import { createVideoCsv } from "./csvMaker";
 
 import { UploadType } from "../apiScripts/playlistIdGetter";
 
+const apiKey = import.meta.env.VITE_API_KEY;
+
 async function getVideos(handle: string, uploadTypes: UploadType[]) {
 
-    const channelId = await getChannelId(handle)
+    const channelId = await getChannelId(apiKey, handle);
 
     const playlistIds = await getPlaylistId(channelId, uploadTypes);
 
-    const videoIds = await getVideoIds(playlistIds);
+    const videoIds = await getVideoIds(apiKey, playlistIds);
 
-    const videos = await getVideoInfo(videoIds);
+    const videos = await getVideoInfo(apiKey, videoIds);
+    console.log(videos);
 
     if (Boolean(Object.keys(videos).length)) {
         const sortedEntries = Object.entries(videos).sort(([, a], [, b]) => b.NumericDate - a.NumericDate)

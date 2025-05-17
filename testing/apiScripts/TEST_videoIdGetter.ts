@@ -1,8 +1,12 @@
-import { createDefaultDict } from "../helpers/defaultdict";
+import dotenv from "dotenv";
+dotenv.config();
+
+const api_key = process.env.API_KEY;
+
+import { createDefaultDict } from "../helpers/TEST_defaultdict";
 
 export async function getVideoIds(
     // Defining expected types of parameters
-    apiKey: string,
     // ? means optional
     playlistIds: {
         videos?: string;
@@ -21,11 +25,11 @@ export async function getVideoIds(
     
 
     for (const [vidType, playlist] of Object.entries(playlistIds)) {
-        let typeIds = []; 
+        let typeIds: string[] = []; 
         let nextPageToken = null;  
 
         while (true) {
-            let url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=${maxResults}&playlistId=${playlist}&key=${apiKey}`;
+            let url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=${maxResults}&playlistId=${playlist}&key=${api_key}`;
 
             if (nextPageToken) {
                 url += `&pageToken=${nextPageToken}`;

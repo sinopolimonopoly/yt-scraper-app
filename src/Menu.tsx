@@ -44,7 +44,7 @@ export default function Menu() {
     };
 
     const getSelectedTypes = () => {
-        const labels = {
+        const labels: Record<string, UploadType> = {
             long: 'videos',
             short: 'shorts',
             live: 'livestreams'

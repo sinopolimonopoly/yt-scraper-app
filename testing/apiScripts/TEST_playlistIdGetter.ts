@@ -1,4 +1,4 @@
-import { createDefaultDict } from "../helpers/defaultdict";
+import { createDefaultDict } from "../helpers/TEST_defaultdict";
 
 export type UploadType = "videos" | "shorts" | "livestreams";
 
@@ -31,4 +31,5 @@ export function getPlaylistId(channelId: string, uploadTypes: UploadType[]): {
     }
 
     return playlistIds
+    // Return playlist Id(s) based on specified upload type 
 }

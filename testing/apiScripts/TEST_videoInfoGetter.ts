@@ -1,10 +1,12 @@
-const api_key = import.meta.env.VITE_API_KEY;
+import dotenv from "dotenv"
+dotenv.config();
 
-import { createDefaultDict } from "../helpers/defaultdict";
-import { processDuration } from "../helpers/durationProcessor";
+const api_key = process.env.API_KEY;
+
+import { createDefaultDict } from "../helpers/TEST_defaultdict";
+import { processDuration } from "../helpers/TEST_durationProcessor";
 
 export async function getVideoInfo(
-    apiKey: string,
     videoIds : {
         videos?: string[];
         shorts?: string[];
@@ -25,7 +27,7 @@ export async function getVideoInfo(
             let data;
 
             try {
-                let url = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet,statistics&id=${commaSepIds}&key=${apiKey}`
+                let url = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet,statistics&id=${commaSepIds}&key=${api_key}`
 
                 let res = await fetch(url);
                 data = await res.json();

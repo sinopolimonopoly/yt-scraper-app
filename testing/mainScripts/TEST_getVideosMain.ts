@@ -1,14 +1,14 @@
-import { getChannelId } from "../apiScripts/channelIdGetter";
-import { getPlaylistId } from "../apiScripts/playlistIdGetter";
-import { getVideoIds } from "../apiScripts/videoIdGetter";
-import { getVideoInfo } from "../apiScripts/videoInfoGetter";
-import { createVideoCsv } from "./csvMaker";
+import { getChannelId } from "../apiScripts/TEST_channelIdGetter";
+import { getPlaylistId } from "../apiScripts/TEST_playlistIdGetter";
+import { getVideoIds } from "../apiScripts/TEST_videoIdGetter";
+import { getVideoInfo } from "../apiScripts/TEST_videoInfoGetter";
+import { createVideoCsv } from "./TEST_csvMaker";
 
-import { UploadType } from "../apiScripts/playlistIdGetter";
+import { UploadType } from "../apiScripts/TEST_playlistIdGetter";
 
 async function main() {
-    const handle = "IShowSpeed"
-    const uploadTypes: UploadType[] = ["shorts", "livestreams"]
+    const handle = "curtisdoingthings"
+    const uploadTypes: UploadType[] = ["videos", "shorts", "livestreams"]
 
     const channelId = await getChannelId(handle)
 

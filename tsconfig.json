@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "CommonJS",
+    "module": "ESNext",
     "jsx": "react-jsx",
     "moduleResolution": "Node",
     "strict": true,
     "esModuleInterop": true,    
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "types": ["vite/client"]
   },
   "include": ["src"]
 }
