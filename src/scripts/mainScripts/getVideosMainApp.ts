@@ -1,12 +1,16 @@
-import { getChannelId } from "../apiScripts/channelIdGetter";
-import { getPlaylistId } from "../apiScripts/playlistIdGetter";
-import { getVideoIds } from "../apiScripts/videoIdGetter";
-import { getVideoInfo } from "../apiScripts/videoInfoGetter";
-import { createVideoCsv } from "./csvMaker";
+import { getChannelId } from "../apiScripts/channelIdGetter.js";
+import { getPlaylistId } from "../apiScripts/playlistIdGetter.js";
+import { getVideoIds } from "../apiScripts/videoIdGetter.js";
+import { getVideoInfo } from "../apiScripts/videoInfoGetter.js";
+import { createVideoCsv } from "./csvMaker.js";
 
-import { UploadType } from "../apiScripts/playlistIdGetter";
+import { UploadType } from "../apiScripts/playlistIdGetter.js";
 
-const apiKey = import.meta.env.VITE_API_KEY;
+import dotenv from 'dotenv';
+dotenv.config();
+
+const apiKey = process.env.API_KEY!;
+if (!apiKey) throw new Error("Missing API_KEY in environment variables");
 
 async function getVideos(handle: string, uploadTypes: UploadType[]) {
 

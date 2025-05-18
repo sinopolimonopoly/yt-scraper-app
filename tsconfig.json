@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "jsx": "react-jsx",
-    "moduleResolution": "Node",
+    "module": "ES2022",
+    "target": "ES2022",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "outDir": "dist",
+    "rootDir": "./",
     "strict": true,
-    "esModuleInterop": true,    
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "types": ["vite/client"]
+    "jsx": "react-jsx",
+    "types": ["vite/client", "node"]
   },
-  "include": ["src"]
+  "include": ["src", "server.ts"],
+  "exclude": ["node_modules"]
 }

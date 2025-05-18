@@ -1,4 +1,4 @@
-import { createDefaultDict } from "../helpers/defaultdict";
+import { createDefaultDict } from "../helpers/defaultdict.js";
 
 export async function getVideoIds(
     // Defining expected types of parameters

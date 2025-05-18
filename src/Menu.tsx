@@ -9,6 +9,9 @@ import '@fontsource/roboto';
 import getVideos from './scripts/mainScripts/getVideosMainApp';
 import { UploadType } from './scripts/apiScripts/playlistIdGetter';
 
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
+
 export default function Menu() {
     const [openConfirm, setOpenConfirm] = useState(false);
     const [handle, setHandle] = useState("");
@@ -17,6 +20,8 @@ export default function Menu() {
         short: false,
         live: false
     });
+
+    const [result, setResult] = useState({});
 
     const isFormValid = handle.trim() !== "" && Object.values(selectedTypes).some(Boolean);
 
@@ -28,12 +33,17 @@ export default function Menu() {
         setOpenConfirm(false);
     }
 
-    const runDaScript = ( handle: string, selectedTypes: UploadType[]) => {
+    const runDaScript = (handle: string, selectedTypes: UploadType[]) => {
         console.log(`Retrieving from channel: ${handle}`);
         console.log(`Upload Types: ${selectedTypes}`)
 
-        getVideos(handle, selectedTypes);
+        //getVideos(handle, selectedTypes);
         setOpenConfirm(false);
+    }
+
+    const handleClick = async (handle: string, selectedTypes: UploadType[]) => {
+        const data = await callGetVideosScript(handle, selectedTypes);
+        setResult(data);
     }
 
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,6 +65,26 @@ export default function Menu() {
             .map(([key]) => labels[key as keyof typeof labels]);
         
         return selected;
+    }
+
+    const callGetVideosScript = async(channelId: string, uploadTypes: UploadType[]) => {
+        try {
+            console.log(baseUrl);
+            const res = await fetch(`${baseUrl}/api/get-videos`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ channelId, uploadTypes }),
+            });
+
+            const data = await res.json();
+            return data;
+        } catch (err: any) {
+            console.log(baseUrl)
+            console.log("FRONT END API ERROR");
+            console.error("ERROR", err);
+        }
     }
 
 
@@ -147,7 +177,7 @@ export default function Menu() {
                                 <Button onClick={() => setOpenConfirm(false)} color="error">
                                     Cancel
                                 </Button>
-                                <Button onClick={() => runDaScript(handle.trim(), getSelectedTypes())} color="primary">
+                                <Button onClick={() => handleClick(handle.trim(), getSelectedTypes())} color="primary">
                                     Fetch Uploads
                                 </Button>
                             </>

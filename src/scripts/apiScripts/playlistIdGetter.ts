@@ -1,4 +1,4 @@
-import { createDefaultDict } from "../helpers/defaultdict";
+import { createDefaultDict } from "../helpers/defaultdict.js";
 
 export type UploadType = "videos" | "shorts" | "livestreams";
 
@@ -20,6 +20,7 @@ export function getPlaylistId(channelId: string, uploadTypes: UploadType[]): {
         livestreams: livestreamId
     }
 
+    console.log(uploadTypes);
     if (uploadTypes.length == 3) {
         return playlistIdObject
     }

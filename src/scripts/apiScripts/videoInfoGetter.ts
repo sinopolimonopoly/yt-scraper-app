@@ -1,7 +1,5 @@
-const api_key = import.meta.env.VITE_API_KEY;
-
-import { createDefaultDict } from "../helpers/defaultdict";
-import { processDuration } from "../helpers/durationProcessor";
+import { createDefaultDict } from "../helpers/defaultdict.js";
+import { processDuration } from "../helpers/durationProcessor.js";
 
 export async function getVideoInfo(
     apiKey: string,
