@@ -79,6 +79,7 @@ export default function Menu() {
             });
 
             const data = await res.json();
+            console.log(data);
             return data;
         } catch (err: any) {
             console.log(baseUrl)

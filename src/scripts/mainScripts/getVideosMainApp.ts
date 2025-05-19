@@ -28,6 +28,8 @@ async function getVideos(handle: string, uploadTypes: UploadType[]) {
 
         const sortedVideos = Object.fromEntries(sortedEntries)
         createVideoCsv(sortedVideos, handle);
+
+        return sortedVideos
     }
 
     else {
@@ -42,6 +44,7 @@ async function getVideos(handle: string, uploadTypes: UploadType[]) {
          }
     }
     
+    return videos;
 }
 
 export default getVideos;

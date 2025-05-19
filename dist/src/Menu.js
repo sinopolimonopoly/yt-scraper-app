@@ -49,7 +49,7 @@ export default function Menu() {
             .map(([key]) => labels[key]);
         return selected;
     };
-    const callGetVideosScript = async (channelId, types) => {
+    const callGetVideosScript = async (channelId, uploadTypes) => {
         try {
             console.log(baseUrl);
             const res = await fetch(`${baseUrl}/api/get-videos`, {
@@ -57,7 +57,7 @@ export default function Menu() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ channelId, types }),
+                body: JSON.stringify({ channelId, uploadTypes }),
             });
             const data = await res.json();
             return data;

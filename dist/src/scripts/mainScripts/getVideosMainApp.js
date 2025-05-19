@@ -18,6 +18,7 @@ async function getVideos(handle, uploadTypes) {
         const sortedEntries = Object.entries(videos).sort(([, a], [, b]) => b.NumericDate - a.NumericDate);
         const sortedVideos = Object.fromEntries(sortedEntries);
         createVideoCsv(sortedVideos, handle);
+        return sortedVideos;
     }
     else {
         if (uploadTypes.length == 3) {
@@ -29,5 +30,6 @@ async function getVideos(handle, uploadTypes) {
             console.log(`No ${uploadTypes.join(', ')} found for channel ${handle}`);
         }
     }
+    return videos;
 }
 export default getVideos;

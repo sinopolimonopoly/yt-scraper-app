@@ -15,6 +15,7 @@ app.post('/api/get-videos', async (req, res) => {
         console.log("channel id", channelId);
         console.log("upload types", uploadTypes);
         const result = await getVideos(channelId, uploadTypes);
+        console.log("Returning data to front end: !!!!", Object.keys(result));
         res.json(result);
     }
     catch (err) {
