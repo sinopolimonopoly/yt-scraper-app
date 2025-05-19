@@ -91,7 +91,7 @@ export async function getVideoInfo(
                     videos[videoId]["VideoType"] = videoType;
 
                     videos[videoId]["Duration"] = rawDuration;
-                    videos[videoId]["DurationinS"] = processedDuration;
+                    videos[videoId]["DurationInS"] = processedDuration;
 
                     videos[videoId]["ViewCount"] = viewCount;
                     videos[videoId]["LikeCount"] = likeCount;

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Grid, Typography, TextField, Checkbox } from '@mui/material';
 import { FormControl, FormGroup, FormControlLabel } from '@mui/material';
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { Divider } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 import '@fontsource/roboto';
 
@@ -21,7 +22,13 @@ export default function Menu() {
         live: false
     });
 
-    const [result, setResult] = useState({});
+    const [results, setResults] = useState<any[]>([]);
+
+    useEffect(() => {
+                console.log("Results updated", results);
+                console.log(results.length);
+                console.log(Array.isArray(results));
+            }, [results]);
 
     const isFormValid = handle.trim() !== "" && Object.values(selectedTypes).some(Boolean);
 
@@ -43,7 +50,7 @@ export default function Menu() {
 
     const handleClick = async (handle: string, selectedTypes: UploadType[]) => {
         const data = await callGetVideosScript(handle, selectedTypes);
-        setResult(data);
+        setResults((data ?? []));
     }
 
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,8 +86,26 @@ export default function Menu() {
             });
 
             const data = await res.json();
-            console.log(data);
-            return data;
+
+            console.log("✅ Raw data:", data);
+            const values = Object.values(data);
+
+            console.log("✅ Object.values(data):", values);
+            console.log("✅ Array.isArray(values):", Array.isArray(values));
+            console.log("✅ values.length:", values.length);
+            console.log("✅ typeof values:", typeof values);
+
+
+            const vidIds = Object.keys(data);
+            const vidData = Object.values(data);
+
+            const vidResults = vidIds.map((VideoId, index) => ({
+                VideoId, ...(vidData[index] as Record<string, any>)
+            }));
+
+            return vidResults;
+
+            
         } catch (err: any) {
             console.log(baseUrl)
             console.log("FRONT END API ERROR");
@@ -192,6 +217,45 @@ export default function Menu() {
                         }
                     </DialogActions>
                 </Dialog>
+
+                {Array.isArray(results) && results.length > 0 && (
+                    <Grid size={12} container justifyContent="center" mt={2}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Video ID</TableCell>
+                                    <TableCell>Title</TableCell>
+                                    <TableCell>Upload Date</TableCell>
+                                    <TableCell>Video Type</TableCell>
+                                    <TableCell>Duration</TableCell>
+                                    <TableCell>Duration in S</TableCell>
+                                    <TableCell>View Count</TableCell>
+                                    <TableCell>Like Count</TableCell>
+                                    <TableCell>Comment Count</TableCell>
+                                </TableRow>
+                            </TableHead>
+
+                            <TableBody>
+                                {results.slice(0,10).map((video, index) => {
+                                    return (
+                                        <TableRow>
+                                            <TableCell>{video.VideoId}</TableCell>
+                                            <TableCell>{video.Title}</TableCell>
+                                            <TableCell>{video.UploadDate}</TableCell>
+                                            <TableCell>{video.VideoType}</TableCell>
+                                            <TableCell>{video.Duration}</TableCell>
+                                            <TableCell>{video.DurationInS}</TableCell>
+                                            <TableCell>{video.ViewCount}</TableCell>
+                                            <TableCell>{video.LikeCount}</TableCell>
+                                            <TableCell>{video.CommentCount}</TableCell>
+                                        </TableRow>
+                                    )
+                                })}
+                            </TableBody>
+                        </Table>
+                    </Grid>
+                )}
+
             </Grid>
         </div>
     )
