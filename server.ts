@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
-import getVideos from './src/scripts/mainScripts/getVideosMainApp.js';
+import path from 'path';
 
+import getVideos from './src/scripts/mainScripts/getVideosMainApp.js';
 import { UploadType } from './src/scripts/apiScripts/playlistIdGetter.js';
 
 const app = express();
@@ -32,6 +33,9 @@ app.post('/api/get-videos', async (req, res) => {
         console.error("Error: ", err)
 
     }
-
-
 });
+
+app.get('/api/download/:filename', (req, res) => {
+    const { filename } = req.params;
+    const filePath = path.join()
+})

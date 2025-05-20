@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
 import getVideos from './src/scripts/mainScripts/getVideosMainApp.js';
 const app = express();
 app.use(cors());
@@ -22,4 +23,8 @@ app.post('/api/get-videos', async (req, res) => {
         console.log("BACK END SERVER TS ERROR");
         console.error("Error: ", err);
     }
+});
+app.get('/api/download/:filename', (req, res) => {
+    const { filename } = req.params;
+    const filePath = path.join();
 });
