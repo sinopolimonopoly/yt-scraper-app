@@ -4,19 +4,13 @@ import { fileURLToPath } from 'url';
 
 const safeText = (text: any) => `"${String(text).replace(/"/g, '""')}"`;
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const projectRoot = path.join(__dirname, '../../../..');
-
 export function createVideoCsv(videos: Record<string, any>, handle: string) {
 
-    const filePath = `${handle}_output.csv`
-    const filePath2 = path.join(projectRoot,'data', `${handle}_output.csv`);
+    const filePath = path.join(process.cwd(), 'data', `${handle}_output.csv`);
 
     const headers = ["videoId", "Title", "UploadDate", "VideoType", "Duration", "DurationInS", "ViewCount", "LikeCount", "CommentCount"]
 
-    fs.writeFileSync(filePath2, headers.join(",") + "\n", 'utf-8')
+    fs.writeFileSync(filePath, headers.join(",") + "\n", 'utf-8')
 
     for (const [videoId, videoInfo] of Object.entries(videos)) {
         const title = safeText(videoInfo.Title);
@@ -30,7 +24,7 @@ export function createVideoCsv(videos: Record<string, any>, handle: string) {
 
         const row =`${videoId},${title},${uploadDate},${videoType},${duration},${durationInS},${viewCount},${likeCount},${commentCount}` + "\n"
 
-        fs.appendFileSync(filePath2, row, "utf-8");
+        fs.appendFileSync(filePath, row, "utf-8");
     }
 
 }

@@ -51,6 +51,7 @@ export default function Menu() {
     const handleClick = async (handle: string, selectedTypes: UploadType[]) => {
         const data = await callGetVideosScript(handle, selectedTypes);
         setResults((data ?? []));
+        setOpenConfirm(false);
     }
 
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,6 +112,15 @@ export default function Menu() {
             console.log("FRONT END API ERROR");
             console.error("ERROR", err);
         }
+    }
+
+    const downloadCSV = async (filename: string) => {
+        const link = document.createElement('a');
+        link.href = `http://localhost:3001/api/download/${filename}`
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
     }
 
 
@@ -256,6 +266,16 @@ export default function Menu() {
                     </Grid>
                 )}
 
+                {(results.length > 0) ? (
+                    <Grid size={12} container justifyContent="center" mt={2}>
+                        <Button variant="contained" color="primary" onClick={() => downloadCSV(`${handle}_output.csv`)}>
+                            Download Output
+                        </Button>
+                    </Grid>
+                ) : (
+                    <></>
+                )}
+                
             </Grid>
         </div>
     )

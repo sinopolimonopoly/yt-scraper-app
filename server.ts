@@ -37,5 +37,13 @@ app.post('/api/get-videos', async (req, res) => {
 
 app.get('/api/download/:filename', (req, res) => {
     const { filename } = req.params;
-    const filePath = path.join()
+    const filePath = path.join(process.cwd(), 'data', filename)
+
+    res.download(filePath, filename, (err) => {
+        if (err) {
+            console.log("API DOWNLOAD FILE ERROR")
+            console.error("Error:", err);
+            res.status(500).send("Error downloading file");
+        }
+    });
 })
