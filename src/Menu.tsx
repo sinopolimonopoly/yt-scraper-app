@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Grid, Typography, TextField, Checkbox } from '@mui/material';
+import Grid from '@mui/material/Grid'; 
+import { Button, Typography, TextField, Checkbox } from '@mui/material';
 import { FormControl, FormGroup, FormControlLabel } from '@mui/material';
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { Divider } from '@mui/material';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { Box } from '@mui/material';
 
 import '@fontsource/roboto';
 
@@ -23,6 +25,12 @@ export default function Menu() {
     });
 
     const [results, setResults] = useState<any[]>([]);
+    const [channelInfo, setChannelInfo] = useState({
+        channel: "",
+        handle: "",
+        subscribers: "",
+        thumbnail: ""
+    })
 
     useEffect(() => {
                 console.log("Results updated", results);
@@ -88,15 +96,6 @@ export default function Menu() {
 
             const data = await res.json();
 
-            console.log("✅ Raw data:", data);
-            const values = Object.values(data);
-
-            console.log("✅ Object.values(data):", values);
-            console.log("✅ Array.isArray(values):", Array.isArray(values));
-            console.log("✅ values.length:", values.length);
-            console.log("✅ typeof values:", typeof values);
-
-
             const vidIds = Object.keys(data);
             const vidData = Object.values(data);
 
@@ -127,16 +126,19 @@ export default function Menu() {
     return (
         <div>
             <Grid container spacing={3}>
+
                 <Grid size={12}>
                     <Typography variant='h2' align='center'>
                         YouTube Channel Scraper
                     </Typography>
                 </Grid>
+
                 <Grid size={12}>
                     <Typography variant='h4' align='center'>
                         Enter a channel's handle and select which videos you'd like to retrieve
                     </Typography>
                 </Grid>
+
                 <Grid size={12} justifyContent="center" display={"flex"}>
                     <TextField fullWidth 
                         id="channel-handle" 
@@ -146,6 +148,7 @@ export default function Menu() {
                         sx={{ width: '400px' }}
                     />
                 </Grid>
+
                 <Grid size={12} container justifyContent="center">
                     <FormControl component="fieldset">
                         <FormGroup aria-label="upload-type" row sx={{ justifyContent: "center"}}>
@@ -173,6 +176,7 @@ export default function Menu() {
                         </FormGroup>
                     </FormControl>
                 </Grid>
+
                 <Grid size={12} container justifyContent="center" mt={2}>
                     <Button variant="contained" color="primary" onClick={handleClickOpen}>
                         Fetch Videos
@@ -227,7 +231,44 @@ export default function Menu() {
                         }
                     </DialogActions>
                 </Dialog>
+            </Grid>
 
+                {(results.length > 0) ? (
+                    
+                    <Grid container spacing={2} alignItems="top" mt={2}>
+                    {/* LEFT: Image */}
+                        <Grid size={6}>
+                            <Box display="flex" justifyContent="flex-end">
+                                <Box
+                                    component="img"
+                                    src="https://yt3.ggpht.com/F-ULo6Ryi7IHofqMHzF7qEieFsfhIuRI8Tv7VVqinU2tjaob6LMtLVEVEAn0hpzqp7amUKyS=s176-c-k-c0x00ffffff-no-rj"
+                                />
+                            </Box>
+                            
+                        </Grid>
+
+                        <Grid size={2}>
+                            <Typography variant='h5' mt={2} sx={{ fontWeight:'bold'}}>
+                                Channel name
+                            </Typography>
+                            <Typography variant='h6'>
+                                Handle
+                            </Typography>
+                            <Typography variant='h6' mt={2}>
+                                Subscribers
+                            </Typography>
+                        </Grid>
+
+                    </Grid>
+                        
+                    
+                ) : (
+                    <>
+                    </>
+                )}
+
+            <Grid container spacing={3}>
+                
                 {Array.isArray(results) && results.length > 0 && (
                     <Grid size={12} container justifyContent="center" mt={2}>
                         <Table>
@@ -275,6 +316,8 @@ export default function Menu() {
                 ) : (
                     <></>
                 )}
+
+                
                 
             </Grid>
         </div>

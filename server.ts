@@ -25,7 +25,6 @@ app.post('/api/get-videos', async (req, res) => {
 
         const result = await getVideos(channelId, uploadTypes);
 
-        console.log("Returning data to front end: !!!!", Object.keys(result))
         res.json(result);
         
     } catch (err: any) {
@@ -33,7 +32,8 @@ app.post('/api/get-videos', async (req, res) => {
         console.error("Error: ", err)
 
     }
-});
+}); 
+
 
 app.get('/api/download/:filename', (req, res) => {
     const { filename } = req.params;

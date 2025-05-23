@@ -5,6 +5,7 @@ import { FormControl, FormGroup, FormControlLabel } from '@mui/material';
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { Divider } from '@mui/material';
 import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { Box } from '@mui/material';
 import '@fontsource/roboto';
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 export default function Menu() {
@@ -37,6 +38,7 @@ export default function Menu() {
     const handleClick = async (handle, selectedTypes) => {
         const data = await callGetVideosScript(handle, selectedTypes);
         setResults((data ?? []));
+        setOpenConfirm(false);
     };
     const handleCheckboxChange = (event) => {
         setSelectedTypes({
@@ -99,5 +101,7 @@ export default function Menu() {
                     }, children: [_jsx(DialogTitle, { children: "Verify Request" }), isFormValid ? (_jsxs(_Fragment, { children: [_jsxs(DialogContent, { children: ["Are you sure you want to retrieve the following uploads from channel", _jsx("br", {}), "@", _jsx("strong", { children: handle }), "?"] }), _jsx(Divider, {}), _jsx(DialogContent, { children: getSelectedTypes().join(' & ') })] })) :
                             _jsx(_Fragment, { children: _jsx(DialogContent, { children: "Enter a YouTube channel handle and select an upload type to fetch results" }) }), _jsx(DialogActions, { children: isFormValid ? (_jsxs(_Fragment, { children: [_jsx(Button, { onClick: () => setOpenConfirm(false), color: "error", children: "Cancel" }), _jsx(Button, { onClick: () => handleClick(handle.trim(), getSelectedTypes()), color: "primary", children: "Fetch Uploads" })] })) : (_jsx(_Fragment, { children: _jsx(Button, { onClick: () => setOpenConfirm(false), children: "Close" }) })) })] }), Array.isArray(results) && results.length > 0 && (_jsx(Grid, { size: 12, container: true, justifyContent: "center", mt: 2, children: _jsxs(Table, { children: [_jsx(TableHead, { children: _jsxs(TableRow, { children: [_jsx(TableCell, { children: "Video ID" }), _jsx(TableCell, { children: "Title" }), _jsx(TableCell, { children: "Upload Date" }), _jsx(TableCell, { children: "Video Type" }), _jsx(TableCell, { children: "Duration" }), _jsx(TableCell, { children: "Duration in S" }), _jsx(TableCell, { children: "View Count" }), _jsx(TableCell, { children: "Like Count" }), _jsx(TableCell, { children: "Comment Count" })] }) }), _jsx(TableBody, { children: results.slice(0, 10).map((video, index) => {
                                     return (_jsxs(TableRow, { children: [_jsx(TableCell, { children: video.VideoId }), _jsx(TableCell, { children: video.Title }), _jsx(TableCell, { children: video.UploadDate }), _jsx(TableCell, { children: video.VideoType }), _jsx(TableCell, { children: video.Duration }), _jsx(TableCell, { children: video.DurationInS }), _jsx(TableCell, { children: video.ViewCount }), _jsx(TableCell, { children: video.LikeCount }), _jsx(TableCell, { children: video.CommentCount })] }));
-                                }) })] }) })), (results.length > 0) ? (_jsx(Grid, { size: 12, container: true, justifyContent: "center", mt: 2, children: _jsx(Button, { variant: "contained", color: "primary", onClick: () => downloadCSV(`${handle}_output.csv`), children: "Download Output" }) })) : (_jsx(_Fragment, {}))] }) }));
+                                }) })] }) })), (results.length > 0) ? (_jsx(Grid, { size: 12, container: true, justifyContent: "center", mt: 2, children: _jsx(Button, { variant: "contained", color: "primary", onClick: () => downloadCSV(`${handle}_output.csv`), children: "Download Output" }) })) : (_jsx(_Fragment, {})), _jsx(Grid, { size: 12, container: true, justifyContent: "center", mt: 2, children: _jsx(Box, { component: "img", 
+                        //src="https://yt3.ggpht.com/F-ULo6Ryi7IHofqMHzF7qEieFsfhIuRI8Tv7VVqinU2tjaob6LMtLVEVEAn0hpzqp7amUKyS=s88-c-k-c0x00ffffff-no-rj"
+                        src: "https://yt3.ggpht.com/F-ULo6Ryi7IHofqMHzF7qEieFsfhIuRI8Tv7VVqinU2tjaob6LMtLVEVEAn0hpzqp7amUKyS=s176-c-k-c0x00ffffff-no-rj", sx: { width: 200, height: 200 } }) })] }) }));
 }
