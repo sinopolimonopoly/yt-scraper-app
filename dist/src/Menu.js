@@ -43,6 +43,9 @@ export default function Menu() {
         setOpenConfirm(false);
     };
     const handleClick = async (handle, selectedTypes) => {
+        console.log("before channel info");
+        callGetChannelInfoScript(handle);
+        console.log("after channel info");
         const data = await callGetVideosScript(handle, selectedTypes);
         setResults((data ?? []));
         setOpenConfirm(false);
@@ -64,7 +67,7 @@ export default function Menu() {
             .map(([key]) => labels[key]);
         return selected;
     };
-    const callGetVideosScript = async (channelId, uploadTypes) => {
+    const callGetVideosScript = async (channelHandle, uploadTypes) => {
         try {
             console.log(baseUrl);
             const res = await fetch(`${baseUrl}/api/get-videos`, {
@@ -72,7 +75,7 @@ export default function Menu() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ channelId, uploadTypes }),
+                body: JSON.stringify({ channelHandle, uploadTypes }),
             });
             const data = await res.json();
             const vidIds = Object.keys(data);
@@ -84,7 +87,25 @@ export default function Menu() {
         }
         catch (err) {
             console.log(baseUrl);
-            console.log("FRONT END API ERROR");
+            console.log("FRONT END GET VIDEOS ERROR");
+            console.error("ERROR", err);
+        }
+    };
+    const callGetChannelInfoScript = async (channelHandle) => {
+        try {
+            const res = await fetch(`${baseUrl}/api/get-channel-info`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ channelHandle })
+            });
+            const data = await res.json();
+            //console.log(data);
+        }
+        catch (err) {
+            console.log(baseUrl);
+            console.log("FRONT END CHANNEL INFO ERROR");
             console.error("ERROR", err);
         }
     };
