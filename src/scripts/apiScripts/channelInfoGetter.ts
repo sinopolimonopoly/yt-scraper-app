@@ -13,7 +13,7 @@ export async function getChannelIdInfo(channelId: string, apiKey: string): Promi
     channelInfo["Handle"] = data.items[0].snippet.customUrl;
     channelInfo["JoinDate"] = data.items[0].snippet.publishedAt.slice(0,10);
     channelInfo["Description"] = data.items[0].snippet.description;
-    channelInfo["ThumbnailUrl"] = data.items[0].snippet.thumbnails.high.url.replace("=s800", "=s176")
+    channelInfo["ThumbnailUrl"] = data.items[0].snippet.thumbnails.high.url.replace("=s800", "=s150")
 
     channelInfo["SubCount"] = data.items[0].statistics.subscriberCount;
     channelInfo["ViewCount"] = data.items[0].statistics.viewCount;

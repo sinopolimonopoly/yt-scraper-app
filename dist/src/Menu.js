@@ -25,9 +25,10 @@ export default function Menu() {
         thumbnail: ""
     });
     useEffect(() => {
-        console.log("Results updated", results);
+        console.log("VIDEO RESULTS updated", results);
         console.log(results.length);
         console.log(Array.isArray(results));
+        console.log(channelInfo);
     }, [results]);
     const isFormValid = handle.trim() !== "" && Object.values(selectedTypes).some(Boolean);
     const handleClickOpen = () => {
@@ -43,10 +44,14 @@ export default function Menu() {
         setOpenConfirm(false);
     };
     const handleClick = async (handle, selectedTypes) => {
-        console.log("before channel info");
-        callGetChannelInfoScript(handle);
-        console.log("after channel info");
+        const chanInfo = await callGetChannelInfoScript(handle);
         const data = await callGetVideosScript(handle, selectedTypes);
+        setChannelInfo({
+            channel: chanInfo.ChannelName,
+            handle: chanInfo.Handle,
+            subscribers: chanInfo.SubCount,
+            thumbnail: chanInfo.ThumbnailUrl
+        });
         setResults((data ?? []));
         setOpenConfirm(false);
     };
@@ -100,7 +105,8 @@ export default function Menu() {
                 },
                 body: JSON.stringify({ channelHandle })
             });
-            const data = await res.json();
+            const infoResults = await res.json();
+            return infoResults;
             //console.log(data);
         }
         catch (err) {
@@ -121,7 +127,7 @@ export default function Menu() {
                                 fontFamily: 'Roboto, Arial, sans-serif',
                             }
                         }, children: [_jsx(DialogTitle, { children: "Verify Request" }), isFormValid ? (_jsxs(_Fragment, { children: [_jsxs(DialogContent, { children: ["Are you sure you want to retrieve the following uploads from channel", _jsx("br", {}), "@", _jsx("strong", { children: handle }), "?"] }), _jsx(Divider, {}), _jsx(DialogContent, { children: getSelectedTypes().join(' & ') })] })) :
-                                _jsx(_Fragment, { children: _jsx(DialogContent, { children: "Enter a YouTube channel handle and select an upload type to fetch results" }) }), _jsx(DialogActions, { children: isFormValid ? (_jsxs(_Fragment, { children: [_jsx(Button, { onClick: () => setOpenConfirm(false), color: "error", children: "Cancel" }), _jsx(Button, { onClick: () => handleClick(handle.trim(), getSelectedTypes()), color: "primary", children: "Fetch Uploads" })] })) : (_jsx(_Fragment, { children: _jsx(Button, { onClick: () => setOpenConfirm(false), children: "Close" }) })) })] })] }), (results.length > 0) ? (_jsxs(Grid, { container: true, spacing: 2, alignItems: "top", mt: 2, children: [_jsx(Grid, { size: 6, children: _jsx(Box, { display: "flex", justifyContent: "flex-end", children: _jsx(Box, { component: "img", src: "https://yt3.ggpht.com/F-ULo6Ryi7IHofqMHzF7qEieFsfhIuRI8Tv7VVqinU2tjaob6LMtLVEVEAn0hpzqp7amUKyS=s176-c-k-c0x00ffffff-no-rj" }) }) }), _jsxs(Grid, { size: 2, children: [_jsx(Typography, { variant: 'h5', mt: 2, sx: { fontWeight: 'bold' }, children: "Channel name" }), _jsx(Typography, { variant: 'h6', children: "Handle" }), _jsx(Typography, { variant: 'h6', mt: 2, children: "Subscribers" })] })] })) : (_jsx(_Fragment, {})), _jsxs(Grid, { container: true, spacing: 3, children: [Array.isArray(results) && results.length > 0 && (_jsx(Grid, { size: 12, container: true, justifyContent: "center", mt: 2, children: _jsxs(Table, { children: [_jsx(TableHead, { children: _jsxs(TableRow, { children: [_jsx(TableCell, { children: "Video ID" }), _jsx(TableCell, { children: "Title" }), _jsx(TableCell, { children: "Upload Date" }), _jsx(TableCell, { children: "Video Type" }), _jsx(TableCell, { children: "Duration" }), _jsx(TableCell, { children: "Duration in S" }), _jsx(TableCell, { children: "View Count" }), _jsx(TableCell, { children: "Like Count" }), _jsx(TableCell, { children: "Comment Count" })] }) }), _jsx(TableBody, { children: results.slice(0, 10).map((video, index) => {
+                                _jsx(_Fragment, { children: _jsx(DialogContent, { children: "Enter a YouTube channel handle and select an upload type to fetch results" }) }), _jsx(DialogActions, { children: isFormValid ? (_jsxs(_Fragment, { children: [_jsx(Button, { onClick: () => setOpenConfirm(false), color: "error", children: "Cancel" }), _jsx(Button, { onClick: () => handleClick(handle.trim(), getSelectedTypes()), color: "primary", children: "Fetch Uploads" })] })) : (_jsx(_Fragment, { children: _jsx(Button, { onClick: () => setOpenConfirm(false), children: "Close" }) })) })] })] }), (results.length > 0) ? (_jsxs(Grid, { container: true, spacing: 2, alignItems: "top", mt: 2, children: [_jsx(Grid, { size: 6, children: _jsx(Box, { display: "flex", justifyContent: "flex-end", children: _jsx(Box, { component: "img", src: channelInfo.thumbnail }) }) }), _jsxs(Grid, { size: 2, children: [_jsx(Typography, { variant: 'h5', mt: 2, sx: { fontWeight: 'bold' }, children: channelInfo.channel }), _jsx(Typography, { variant: 'h6', children: channelInfo.handle }), _jsx(Typography, { variant: 'h6', mt: 2, children: channelInfo.subscribers })] })] })) : (_jsx(_Fragment, {})), _jsxs(Grid, { container: true, spacing: 3, children: [Array.isArray(results) && results.length > 0 && (_jsx(Grid, { size: 12, container: true, justifyContent: "center", mt: 2, children: _jsxs(Table, { children: [_jsx(TableHead, { children: _jsxs(TableRow, { children: [_jsx(TableCell, { children: "Video ID" }), _jsx(TableCell, { children: "Title" }), _jsx(TableCell, { children: "Upload Date" }), _jsx(TableCell, { children: "Video Type" }), _jsx(TableCell, { children: "Duration" }), _jsx(TableCell, { children: "Duration in S" }), _jsx(TableCell, { children: "View Count" }), _jsx(TableCell, { children: "Like Count" }), _jsx(TableCell, { children: "Comment Count" })] }) }), _jsx(TableBody, { children: results.slice(0, 10).map((video, index) => {
                                         return (_jsxs(TableRow, { children: [_jsx(TableCell, { children: video.VideoId }), _jsx(TableCell, { children: video.Title }), _jsx(TableCell, { children: video.UploadDate }), _jsx(TableCell, { children: video.VideoType }), _jsx(TableCell, { children: video.Duration }), _jsx(TableCell, { children: video.DurationInS }), _jsx(TableCell, { children: video.ViewCount }), _jsx(TableCell, { children: video.LikeCount }), _jsx(TableCell, { children: video.CommentCount })] }));
                                     }) })] }) })), (results.length > 0) ? (_jsx(Grid, { size: 12, container: true, justifyContent: "center", mt: 2, children: _jsx(Button, { variant: "contained", color: "primary", onClick: () => downloadCSV(`${handle}_output.csv`), children: "Download Output" }) })) : (_jsx(_Fragment, {}))] })] }));
 }

@@ -17,9 +17,8 @@ export async function getChannelId(apiKey: string, handle: string): Promise<stri
     const res = await fetch(url);
     const data = await res.json();
 
-
-
     for (const [idx, item] of data.items.entries()) {
+        console.log("channel id idx", idx)
         channelId = item.id.channelId
         handleUrl = `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,contentDetails&id=${channelId}&key=${apiKey}`
         let channelRes = await fetch(handleUrl);

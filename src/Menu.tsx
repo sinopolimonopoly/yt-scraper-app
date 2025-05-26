@@ -33,9 +33,10 @@ export default function Menu() {
     })
 
     useEffect(() => {
-                console.log("Results updated", results);
+                console.log("VIDEO RESULTS updated", results);
                 console.log(results.length);
                 console.log(Array.isArray(results));
+                console.log(channelInfo);
             }, [results]);
 
     const isFormValid = handle.trim() !== "" && Object.values(selectedTypes).some(Boolean);
@@ -57,10 +58,16 @@ export default function Menu() {
     }
 
     const handleClick = async (handle: string, selectedTypes: UploadType[]) => {    
-        console.log("before channel info")
-        callGetChannelInfoScript(handle);
-        console.log("after channel info")
+        const chanInfo = await callGetChannelInfoScript(handle);
         const data = await callGetVideosScript(handle, selectedTypes);
+
+        setChannelInfo({
+            channel: chanInfo.ChannelName,
+            handle: chanInfo.Handle,
+            subscribers: chanInfo.SubCount,
+            thumbnail: chanInfo.ThumbnailUrl
+        });
+
         setResults((data ?? []));
         setOpenConfirm(false);
     }
@@ -126,7 +133,10 @@ export default function Menu() {
                 body: JSON.stringify({ channelHandle })
             });
             
-            const data = await res.json();
+            const infoResults = await res.json();
+
+            return infoResults;
+
 
             //console.log(data);
             } catch (err: any) {
@@ -264,7 +274,7 @@ export default function Menu() {
                             <Box display="flex" justifyContent="flex-end">
                                 <Box
                                     component="img"
-                                    src="https://yt3.ggpht.com/F-ULo6Ryi7IHofqMHzF7qEieFsfhIuRI8Tv7VVqinU2tjaob6LMtLVEVEAn0hpzqp7amUKyS=s176-c-k-c0x00ffffff-no-rj"
+                                    src={channelInfo.thumbnail}
                                 />
                             </Box>
                             
@@ -272,13 +282,13 @@ export default function Menu() {
 
                         <Grid size={2}>
                             <Typography variant='h5' mt={2} sx={{ fontWeight:'bold'}}>
-                                Channel name
+                                {channelInfo.channel}
                             </Typography>
                             <Typography variant='h6'>
-                                Handle
+                                {channelInfo.handle}
                             </Typography>
                             <Typography variant='h6' mt={2}>
-                                Subscribers
+                                {channelInfo.subscribers}
                             </Typography>
                         </Grid>
 

@@ -28,8 +28,9 @@ app.post('/api/get-channel-info', async (req, res) => {
     try {
         const { channelHandle } = req.body;
         const result = await getChannelInfo(channelHandle);
+        console.log("before res jsoning", result);
         res.json(result);
-        console.log(result);
+        console.log("server ts output", result);
     }
     catch (err) {
         console.log("BACK END GET CHANNEL INFO ERROR");
