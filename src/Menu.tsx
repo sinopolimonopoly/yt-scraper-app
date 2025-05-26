@@ -288,7 +288,7 @@ export default function Menu() {
                                 {channelInfo.handle}
                             </Typography>
                             <Typography variant='h6' mt={2}>
-                                {channelInfo.subscribers}
+                                {channelInfo.subscribers.toLocaleString()} subscribers
                             </Typography>
                         </Grid>
 
@@ -328,10 +328,10 @@ export default function Menu() {
                                             <TableCell>{video.UploadDate}</TableCell>
                                             <TableCell>{video.VideoType}</TableCell>
                                             <TableCell>{video.Duration}</TableCell>
-                                            <TableCell>{video.DurationInS}</TableCell>
-                                            <TableCell>{video.ViewCount}</TableCell>
-                                            <TableCell>{video.LikeCount}</TableCell>
-                                            <TableCell>{video.CommentCount}</TableCell>
+                                            <TableCell>{video.DurationInS.toLocaleString()}</TableCell>
+                                            <TableCell>{video.ViewCount.toLocaleString()}</TableCell>
+                                            <TableCell>{video.LikeCount.toLocaleString()}</TableCell>
+                                            <TableCell>{video.CommentCount.toLocaleString()}</TableCell>
                                         </TableRow>
                                     )
                                 })}
