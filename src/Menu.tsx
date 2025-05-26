@@ -6,6 +6,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material
 import { Divider } from '@mui/material';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { Box } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 
 import '@fontsource/roboto';
 
@@ -28,9 +29,10 @@ export default function Menu() {
     const [channelInfo, setChannelInfo] = useState({
         channel: "",
         handle: "",
-        subscribers: "",
+        subscribers: 0,
         thumbnail: ""
     })
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
                 console.log("VIDEO RESULTS updated", results);
@@ -49,15 +51,8 @@ export default function Menu() {
         setOpenConfirm(false);
     }
 
-    const runDaScript = (handle: string, selectedTypes: UploadType[]) => {
-        console.log(`Retrieving from channel: ${handle}`);
-        console.log(`Upload Types: ${selectedTypes}`)
-
-        //getVideos(handle, selectedTypes);
-        setOpenConfirm(false);
-    }
-
-    const handleClick = async (handle: string, selectedTypes: UploadType[]) => {    
+    const handleClick = async (handle: string, selectedTypes: UploadType[]) => {
+        setLoading(true);    
         const chanInfo = await callGetChannelInfoScript(handle);
         const data = await callGetVideosScript(handle, selectedTypes);
 
@@ -70,6 +65,7 @@ export default function Menu() {
 
         setResults((data ?? []));
         setOpenConfirm(false);
+        setLoading(false);
     }
 
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -212,8 +208,10 @@ export default function Menu() {
 
                 <Grid size={12} container justifyContent="center" mt={2}>
                     <Button variant="contained" color="primary" onClick={handleClickOpen}>
-                        Fetch Videos
+                        {loading ? "Loading... " : "Fetch Videos"}
                     </Button>
+
+                    {loading && <CircularProgress/>}
                 </Grid>
                 
                 <Dialog 
@@ -264,6 +262,8 @@ export default function Menu() {
                         }
                     </DialogActions>
                 </Dialog>
+
+                
             </Grid>
 
                 {(results.length > 0) ? (

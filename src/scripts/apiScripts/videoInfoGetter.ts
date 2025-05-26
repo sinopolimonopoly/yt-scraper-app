@@ -79,6 +79,7 @@ export async function getVideoInfo(
                         commentCount = "Disabled";
                     }
 
+                    // Assigning data to current video ID object
                     videos[videoId]["Title"] = title;
                     videos[videoId]["UploadDate"] = uploadDate;
                     videos[videoId]["NumericDate"] = Number(uploadDate.replaceAll("-", ""));

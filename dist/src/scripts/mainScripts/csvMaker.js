@@ -10,7 +10,7 @@ export function createVideoCsv(videos, handle) {
         const uploadDate = videoInfo.UploadDate;
         const videoType = videoInfo.VideoType;
         const duration = videoInfo.Duration;
-        const durationInS = videoInfo.DurationinS;
+        const durationInS = videoInfo.DurationInS;
         const viewCount = videoInfo.ViewCount;
         const likeCount = videoInfo.LikeCount;
         const commentCount = videoInfo.CommentCount;
