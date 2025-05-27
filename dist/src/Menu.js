@@ -41,15 +41,19 @@ export default function Menu() {
     };
     const handleClick = async (handle, selectedTypes) => {
         setLoading(true);
+        // Fetch api results
         const chanInfo = await callGetChannelInfoScript(handle);
-        const data = await callGetVideosScript(handle, selectedTypes);
+        const videoList = await callGetVideosScript(handle, selectedTypes);
+        // Set channel info
         setChannelInfo({
-            channel: chanInfo.ChannelName,
-            handle: chanInfo.Handle,
-            subscribers: chanInfo.SubCount,
-            thumbnail: chanInfo.ThumbnailUrl
+            channel: chanInfo.result.ChannelName,
+            handle: chanInfo.result.Handle,
+            subscribers: chanInfo.result.SubCount,
+            thumbnail: chanInfo.result.ThumbnailUrl
         });
-        setResults((data ?? []));
+        // Set upload list results
+        setResults((videoList.result));
+        // Close dialogs, end loading
         setOpenConfirm(false);
         setLoading(false);
     };
@@ -81,17 +85,38 @@ export default function Menu() {
                 body: JSON.stringify({ channelHandle, uploadTypes }),
             });
             const data = await res.json();
-            const vidIds = Object.keys(data);
-            const vidData = Object.values(data);
-            const vidResults = vidIds.map((VideoId, index) => ({
-                VideoId, ...vidData[index]
-            }));
-            return vidResults;
+            return processGetVideos(data);
         }
         catch (err) {
             console.log(baseUrl);
             console.log("FRONT END GET VIDEOS ERROR");
             console.error("ERROR", err);
+            return {
+                result: [],
+                error: true,
+                errorMessage: "Network error",
+            };
+        }
+    };
+    const processGetVideos = (vidResults) => {
+        if (vidResults.error == false) {
+            const vidIds = Object.keys(vidResults.result);
+            const vidData = Object.values(vidResults.result);
+            const endResults = vidIds.map((VideoId, index) => ({
+                VideoId, ...vidData[index]
+            }));
+            return {
+                result: endResults,
+                error: false,
+                errorMessage: ""
+            };
+        }
+        else {
+            return {
+                result: [],
+                error: true,
+                errorMessage: "Video retrieval error"
+            };
         }
     };
     const callGetChannelInfoScript = async (channelHandle) => {

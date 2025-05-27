@@ -16,6 +16,17 @@ async function getVideos(handle: string, uploadTypes: UploadType[]) {
 
     const channelId = await getChannelId(apiKey, handle);
 
+    if (channelId == "") {
+        console.log("Get Info Main function exited.")
+        console.log(`No channel found with handle: ${handle}.`)
+
+        return {
+            result: {},
+            error: true,
+            errorMessage: `No channel found with handle ${handle}`
+        }
+    }
+
     const playlistIds = await getPlaylistId(channelId, uploadTypes);
 
     const videoIds = await getVideoIds(apiKey, playlistIds);
@@ -28,7 +39,10 @@ async function getVideos(handle: string, uploadTypes: UploadType[]) {
         const sortedVideos = Object.fromEntries(sortedEntries)
         createVideoCsv(sortedVideos, handle);
 
-        return sortedVideos
+        return {
+            result: sortedVideos,
+            error: false,
+            errorMessage: ""}
     }
 
     // No videos
@@ -36,15 +50,24 @@ async function getVideos(handle: string, uploadTypes: UploadType[]) {
         if (uploadTypes.length == 3) {
             console.log("######## No Videos #########")
             console.log(`No uploads of any type found for channel ${handle}`)
+
+            return {
+                result: {},
+                error: true,
+                errorMessage: `No uploads of any type found for channel ${handle}`
+            }
         }
         
          else {
-            console.log("######## No Videos of Type #########")
-            console.log(`No ${uploadTypes.join(', ')} found for channel ${handle}`)
+            console.log("######## No Videos of Specific Type #########")
+            
+            return {
+                result: {},
+                error: true,
+                errorMessage: `No ${uploadTypes.join(', ')} found for channel ${handle}`
+            }
          }
     }
-    
-    return videos;
 }
 
 export default getVideos;

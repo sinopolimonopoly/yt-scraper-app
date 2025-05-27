@@ -10,13 +10,13 @@ import { CircularProgress } from '@mui/material';
 
 import '@fontsource/roboto';
 
-import getVideos from './scripts/mainScripts/getVideosMainApp';
 import { UploadType } from './scripts/apiScripts/playlistIdGetter';
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 
 export default function Menu() {
+
     const [openConfirm, setOpenConfirm] = useState(false);
     const [handle, setHandle] = useState("");
     const [selectedTypes, setSelectedTypes] = useState({
@@ -55,7 +55,7 @@ export default function Menu() {
         setLoading(true);    
         // Fetch api results
         const chanInfo = await callGetChannelInfoScript(handle);
-        const data = await callGetVideosScript(handle, selectedTypes);
+        const videoList = await callGetVideosScript(handle, selectedTypes);
 
         // Set channel info
         setChannelInfo({
@@ -66,7 +66,7 @@ export default function Menu() {
         });
 
         // Set upload list results
-        setResults((data ?? []));
+        setResults((videoList.result));
 
         // Close dialogs, end loading
         setOpenConfirm(false);
@@ -107,20 +107,50 @@ export default function Menu() {
 
             const data = await res.json();
 
-            const vidIds = Object.keys(data);
-            const vidData = Object.values(data);
-
-            const vidResults = vidIds.map((VideoId, index) => ({
-                VideoId, ...(vidData[index] as Record<string, any>)
-            }));
-
-            return vidResults;
+            return processGetVideos(data);
 
             
         } catch (err: any) {
             console.log(baseUrl)
             console.log("FRONT END GET VIDEOS ERROR");
             console.error("ERROR", err);
+            return {
+                result: [],
+                error: true,
+                errorMessage: "Network error",
+             };
+        }
+    }
+
+    const processGetVideos = (
+        vidResults: {
+            result: Record<string, any>,
+            error: Boolean,
+            errorMessage: string,
+        }
+    ) => {
+
+        if (vidResults.error == false) {
+            const vidIds = Object.keys(vidResults.result);
+            const vidData = Object.values(vidResults.result);
+
+            const endResults = vidIds.map((VideoId, index) => ({
+                VideoId, ...(vidData[index] as Record<string, any>)
+            }));
+
+            return {
+                result: endResults,
+                error: false,
+                errorMessage: ""
+            }
+        }
+ 
+        else {
+            return {
+                result: [],
+                error: true,
+                errorMessage: "Video retrieval error"
+            }
         }
     }
 
