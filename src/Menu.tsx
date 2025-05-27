@@ -53,17 +53,22 @@ export default function Menu() {
 
     const handleClick = async (handle: string, selectedTypes: UploadType[]) => {
         setLoading(true);    
+        // Fetch api results
         const chanInfo = await callGetChannelInfoScript(handle);
         const data = await callGetVideosScript(handle, selectedTypes);
 
+        // Set channel info
         setChannelInfo({
-            channel: chanInfo.ChannelName,
-            handle: chanInfo.Handle,
-            subscribers: chanInfo.SubCount,
-            thumbnail: chanInfo.ThumbnailUrl
+            channel: chanInfo.result.ChannelName,
+            handle: chanInfo.result.Handle,
+            subscribers: chanInfo.result.SubCount,
+            thumbnail: chanInfo.result.ThumbnailUrl
         });
 
+        // Set upload list results
         setResults((data ?? []));
+
+        // Close dialogs, end loading
         setOpenConfirm(false);
         setLoading(false);
     }
@@ -131,7 +136,7 @@ export default function Menu() {
             
             const infoResults = await res.json();
 
-            return infoResults;
+            return infoResults
 
 
             //console.log(data);

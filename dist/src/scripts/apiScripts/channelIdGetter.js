@@ -5,20 +5,17 @@
 export async function getChannelId(apiKey, handle) {
     let handleVerified = false;
     let validIdx;
-    let channelId;
-    let handleUrl;
-    let channelData;
-    let dataHandle;
+    let verifiedChannelId;
     let url = `https://www.googleapis.com/youtube/v3/search?&type=channel&q=${handle}&key=${apiKey}`;
     const res = await fetch(url);
     const data = await res.json();
     for (const [idx, item] of data.items.entries()) {
         console.log("channel id idx", idx);
-        channelId = item.id.channelId;
-        handleUrl = `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,contentDetails&id=${channelId}&key=${apiKey}`;
-        let channelRes = await fetch(handleUrl);
-        let channelData = await channelRes.json();
-        dataHandle = channelData.items[0].snippet.customUrl;
+        let currentChannelId = item.id.channelId;
+        let handleUrl = `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,contentDetails&id=${currentChannelId}&key=${apiKey}`;
+        let currentResponse = await fetch(handleUrl);
+        let currentChannelData = await currentResponse.json();
+        let dataHandle = currentChannelData.items[0].snippet.customUrl;
         console.log(idx, item);
         console.log("current handle:", dataHandle);
         if (dataHandle.toLowerCase().replace("@", "") == handle.toLowerCase()) {
@@ -28,8 +25,8 @@ export async function getChannelId(apiKey, handle) {
         }
     }
     if (handleVerified) {
-        channelId = data.items[validIdx].id.channelId;
-        return channelId;
+        verifiedChannelId = data.items[validIdx].id.channelId;
+        return verifiedChannelId;
     }
     else {
         console.log(`No channel found with handle: ${handle}.`);

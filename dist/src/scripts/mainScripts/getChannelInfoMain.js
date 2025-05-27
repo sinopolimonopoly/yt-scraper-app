@@ -12,8 +12,17 @@ async function getChannelInfo(handle) {
         console.log("Get Info Main function exited.");
         console.log(`No channel found with handle: ${handle}.`);
         process.exit(0);
+        return {
+            result: {},
+            error: true,
+            errorMessage: `No channel found with handle ${handle}`
+        };
     }
     const channelInfo = await getChannelIdInfo(channelId, apiKey);
-    return channelInfo;
+    return {
+        result: channelInfo,
+        error: false,
+        errorMessage: "no error"
+    };
 }
 export default getChannelInfo;

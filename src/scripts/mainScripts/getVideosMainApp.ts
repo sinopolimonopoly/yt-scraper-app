@@ -21,9 +21,8 @@ async function getVideos(handle: string, uploadTypes: UploadType[]) {
     const videoIds = await getVideoIds(apiKey, playlistIds);
 
     const videos = await getVideoInfo(apiKey, videoIds);
-    console.log(videos);
 
-    if (Boolean(Object.keys(videos).length)) {
+    if (Number(Object.keys(videos).length) > 0) {
         const sortedEntries = Object.entries(videos).sort(([, a], [, b]) => b.NumericDate - a.NumericDate)
 
         const sortedVideos = Object.fromEntries(sortedEntries)
@@ -32,6 +31,7 @@ async function getVideos(handle: string, uploadTypes: UploadType[]) {
         return sortedVideos
     }
 
+    // No videos
     else {
         if (uploadTypes.length == 3) {
             console.log("######## No Videos #########")
