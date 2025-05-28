@@ -25,21 +25,27 @@ export default function Menu() {
         live: false
     });
 
-    const [results, setResults] = useState<any[]>([]);
+    const [videoList, setvideoList] = useState<any[]>([]);
+    const [isVideoErr, setIsVideoErr] = useState(false);
+    const [videoErrMsg, setvideoErrMsg] = useState("")
+
     const [channelInfo, setChannelInfo] = useState({
         channel: "",
         handle: "",
         subscribers: 0,
         thumbnail: ""
     })
+    const [isChannelErr, setIsChannelErr] = useState(false);
+    const [channelErrMsg, setChannelErrMsg] = useState("")
+
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-                console.log("VIDEO RESULTS updated", results);
-                console.log(results.length);
-                console.log(Array.isArray(results));
+                console.log("VIDEO RESULTS updated", videoList);
+                console.log(videoList.length);
+                console.log(Array.isArray(videoList));
                 console.log(channelInfo);
-            }, [results]);
+            }, [videoList]);
 
     const isFormValid = handle.trim() !== "" && Object.values(selectedTypes).some(Boolean);
 
@@ -55,19 +61,34 @@ export default function Menu() {
         setLoading(true);    
         // Fetch api results
         const chanInfo = await callGetChannelInfoScript(handle);
-        const videoList = await callGetVideosScript(handle, selectedTypes);
 
-        // Set channel info
+        // Set channel info states
         setChannelInfo({
             channel: chanInfo.result.ChannelName,
             handle: chanInfo.result.Handle,
             subscribers: chanInfo.result.SubCount,
             thumbnail: chanInfo.result.ThumbnailUrl
         });
+        setIsChannelErr(chanInfo.error);
+        setChannelErrMsg(chanInfo.errorMessage);
 
-        // Set upload list results
-        setResults((videoList.result));
+        if (chanInfo.error == false) { 
 
+            const vidList = await callGetVideosScript(handle, selectedTypes);
+
+            // Set video list states
+            setvideoList(vidList.result);
+            setIsVideoErr(vidList.error);
+            setvideoErrMsg(vidList.errorMessage);
+        }
+
+        else if (chanInfo.error == true) {
+            console.log("WE HIT A ERROR")
+            setvideoList([]);
+            setIsVideoErr(true);
+            setvideoErrMsg("Unable to reach channel, so no attempt was made to fetch videos.");
+        }
+        
         // Close dialogs, end loading
         setOpenConfirm(false);
         setLoading(false);
@@ -145,7 +166,7 @@ export default function Menu() {
             }
         }
  
-        else {
+        else { // If vidResults.error == true
             return {
                 result: [],
                 error: true,
@@ -257,9 +278,9 @@ export default function Menu() {
                         } 
                     }}
                 >    
-                    <DialogTitle>Verify Request</DialogTitle>
                     { isFormValid ? (
-                    <>
+                        <>
+                        <DialogTitle>Verify Request</DialogTitle>
                         <DialogContent>
                             Are you sure you want to retrieve the following uploads from channel 
                             <br />
@@ -269,13 +290,14 @@ export default function Menu() {
                         <DialogContent>
                             {getSelectedTypes().join(' & ')}
                         </DialogContent>
-                    </>
+                        </>
                     ) :
-                    <> 
+                        <> 
+                        <DialogTitle>Invalid Request</DialogTitle>
                         <DialogContent>
                             Enter a YouTube channel handle and select an upload type to fetch results
                         </DialogContent>
-                    </>
+                        </>
                     }
                     <DialogActions>
                         { isFormValid ? (
@@ -301,7 +323,36 @@ export default function Menu() {
                 
             </Grid>
 
-                {(results.length > 0) ? (
+                {(isChannelErr || isVideoErr) ? (
+                    <>
+                    <Dialog 
+                        open={openConfirm} 
+                        onClose={handleClose}
+                        sx={{ '& .MuiDialogTitle-root, & .MuiDialogContent-root, & .MuiDialogActions-root': {
+                                fontFamily: 'Roboto, Arial, sans-serif',
+                            } 
+                        }}
+                    >
+                        <DialogTitle>Retrieval Error</DialogTitle>
+                         <DialogContent>
+                            The following error(s) occured: 
+                            {isChannelErr && (
+                                `\nChannel Information: ${channelErrMsg}`
+                            ) }
+                            {isVideoErr && (
+                                `\nVideo List: ${videoErrMsg}`
+                            ) }
+
+                        </DialogContent>
+                    </Dialog>    
+                    </>
+                ) : (
+                    <>
+                    </>
+                )
+                }
+
+                {(videoList.length > 0) ? (
                     
                     <Grid container spacing={2} alignItems="top" mt={2}>
                     {/* LEFT: Image */}
@@ -337,7 +388,7 @@ export default function Menu() {
 
             <Grid container spacing={3}>
                 
-                {Array.isArray(results) && results.length > 0 && (
+                {Array.isArray(videoList) && videoList.length > 0 && (
                     <Grid size={12} container justifyContent="center" mt={2}>
                         <Table>
                             <TableHead>
@@ -355,7 +406,7 @@ export default function Menu() {
                             </TableHead>
 
                             <TableBody>
-                                {results.slice(0,10).map((video, index) => {
+                                {videoList.slice(0,10).map((video, index) => {
                                     return (
                                         <TableRow>
                                             <TableCell>{video.VideoId}</TableCell>
@@ -375,7 +426,7 @@ export default function Menu() {
                     </Grid>
                 )}
 
-                {(results.length > 0) ? (
+                {(videoList.length > 0) ? (
                     <Grid size={12} container justifyContent="center" mt={2}>
                         <Button variant="contained" color="primary" onClick={() => downloadCSV(`${handle}_output.csv`)}>
                             Download Output
