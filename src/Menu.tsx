@@ -40,6 +40,8 @@ export default function Menu() {
 
     const [loading, setLoading] = useState(false);
 
+    const [openErrDialog, setOpenErrDialog] = useState(false);
+
     useEffect(() => {
                 console.log("VIDEO RESULTS updated", videoList);
                 console.log(videoList.length);
@@ -51,6 +53,8 @@ export default function Menu() {
 
     const handleClickOpen = () => {
         setOpenConfirm(true);
+        setIsChannelErr(false);
+        setIsVideoErr(false);
     }
 
     const handleClose = () => {
@@ -170,7 +174,7 @@ export default function Menu() {
             return {
                 result: [],
                 error: true,
-                errorMessage: "Video retrieval error"
+                errorMessage: vidResults.errorMessage
             }
         }
     }
@@ -326,7 +330,7 @@ export default function Menu() {
                 {(isChannelErr || isVideoErr) ? (
                     <>
                     <Dialog 
-                        open={openConfirm} 
+                        open={isChannelErr || isVideoErr} 
                         onClose={handleClose}
                         sx={{ '& .MuiDialogTitle-root, & .MuiDialogContent-root, & .MuiDialogActions-root': {
                                 fontFamily: 'Roboto, Arial, sans-serif',
@@ -335,15 +339,30 @@ export default function Menu() {
                     >
                         <DialogTitle>Retrieval Error</DialogTitle>
                          <DialogContent>
-                            The following error(s) occured: 
+                            The following error(s) occured
+                            <br/>
+                            <Divider sx={{my: 1}}/>
                             {isChannelErr && (
-                                `\nChannel Information: ${channelErrMsg}`
+                                <>
+                                <strong>Channel Information:</strong> {channelErrMsg}
+                                </>
                             ) }
+                            <br/>
                             {isVideoErr && (
-                                `\nVideo List: ${videoErrMsg}`
+                                <>
+                                <strong>Video List Information:</strong> {videoErrMsg}
+                                </>
                             ) }
-
                         </DialogContent>
+                        <DialogActions>
+                            <Button onClick={() => {
+                                setIsChannelErr(false);
+                                setIsVideoErr(false);
+                                }} 
+                                color="error">
+                                    Cancel
+                            </Button>
+                        </DialogActions>
                     </Dialog>    
                     </>
                 ) : (
