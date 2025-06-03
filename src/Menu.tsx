@@ -13,7 +13,7 @@ import '@fontsource/roboto';
 import { UploadType } from './scripts/apiScripts/playlistIdGetter';
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
-console.log(baseUrl)
+console.log(baseUrl, "top of menu")
 
 export default function Menu() {
 
