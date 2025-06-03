@@ -12,7 +12,8 @@ import '@fontsource/roboto';
 
 import { UploadType } from './scripts/apiScripts/playlistIdGetter';
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
+const baseUrl = import.meta.env.VITE_BASE_URL;
+console.log(baseUrl)
 
 export default function Menu() {
 
@@ -120,7 +121,7 @@ export default function Menu() {
 
     const callGetVideosScript = async(channelHandle: string, uploadTypes: UploadType[]) => {
         try {
-            console.log(baseUrl);
+            console.log(baseUrl,"ashdahsddhs");
             const res = await fetch(`${baseUrl}/api/get-videos`, {
                 method: 'POST',
                 headers: {
