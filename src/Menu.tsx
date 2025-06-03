@@ -14,7 +14,6 @@ import { UploadType } from './scripts/apiScripts/playlistIdGetter';
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
-
 export default function Menu() {
 
     const [openConfirm, setOpenConfirm] = useState(false);

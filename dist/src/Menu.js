@@ -30,6 +30,7 @@ export default function Menu() {
     const [isChannelErr, setIsChannelErr] = useState(false);
     const [channelErrMsg, setChannelErrMsg] = useState("");
     const [loading, setLoading] = useState(false);
+    const [openErrDialog, setOpenErrDialog] = useState(false);
     useEffect(() => {
         console.log("VIDEO RESULTS updated", videoList);
         console.log(videoList.length);
@@ -39,6 +40,8 @@ export default function Menu() {
     const isFormValid = handle.trim() !== "" && Object.values(selectedTypes).some(Boolean);
     const handleClickOpen = () => {
         setOpenConfirm(true);
+        setIsChannelErr(false);
+        setIsVideoErr(false);
     };
     const handleClose = () => {
         setOpenConfirm(false);
@@ -131,7 +134,7 @@ export default function Menu() {
             return {
                 result: [],
                 error: true,
-                errorMessage: "Video retrieval error"
+                errorMessage: vidResults.errorMessage
             };
         }
     };
@@ -166,10 +169,13 @@ export default function Menu() {
                                 fontFamily: 'Roboto, Arial, sans-serif',
                             }
                         }, children: [isFormValid ? (_jsxs(_Fragment, { children: [_jsx(DialogTitle, { children: "Verify Request" }), _jsxs(DialogContent, { children: ["Are you sure you want to retrieve the following uploads from channel", _jsx("br", {}), "@", _jsx("strong", { children: handle }), "?"] }), _jsx(Divider, {}), _jsx(DialogContent, { children: getSelectedTypes().join(' & ') })] })) :
-                                _jsxs(_Fragment, { children: [_jsx(DialogTitle, { children: "Invalid Request" }), _jsx(DialogContent, { children: "Enter a YouTube channel handle and select an upload type to fetch results" })] }), _jsx(DialogActions, { children: isFormValid ? (_jsxs(_Fragment, { children: [_jsx(Button, { onClick: () => setOpenConfirm(false), color: "error", children: "Cancel" }), _jsx(Button, { onClick: () => handleClick(handle.trim(), getSelectedTypes()), color: "primary", children: "Fetch Uploads" })] })) : (_jsx(_Fragment, { children: _jsx(Button, { onClick: () => setOpenConfirm(false), children: "Close" }) })) })] })] }), (isChannelErr || isVideoErr) ? (_jsx(_Fragment, { children: _jsxs(Dialog, { open: openConfirm, onClose: handleClose, sx: { '& .MuiDialogTitle-root, & .MuiDialogContent-root, & .MuiDialogActions-root': {
+                                _jsxs(_Fragment, { children: [_jsx(DialogTitle, { children: "Invalid Request" }), _jsx(DialogContent, { children: "Enter a YouTube channel handle and select an upload type to fetch results" })] }), _jsx(DialogActions, { children: isFormValid ? (_jsxs(_Fragment, { children: [_jsx(Button, { onClick: () => setOpenConfirm(false), color: "error", children: "Cancel" }), _jsx(Button, { onClick: () => handleClick(handle.trim(), getSelectedTypes()), color: "primary", children: "Fetch Uploads" })] })) : (_jsx(_Fragment, { children: _jsx(Button, { onClick: () => setOpenConfirm(false), children: "Close" }) })) })] })] }), (isChannelErr || isVideoErr) ? (_jsx(_Fragment, { children: _jsxs(Dialog, { open: isChannelErr || isVideoErr, onClose: handleClose, sx: { '& .MuiDialogTitle-root, & .MuiDialogContent-root, & .MuiDialogActions-root': {
                             fontFamily: 'Roboto, Arial, sans-serif',
                         }
-                    }, children: [_jsx(DialogTitle, { children: "Retrieval Error" }), _jsxs(DialogContent, { children: ["The following error(s) occured:", isChannelErr && (`\nChannel Information: ${channelErrMsg}`), isVideoErr && (`\nVideo List: ${videoErrMsg}`)] })] }) })) : (_jsx(_Fragment, {})), (videoList.length > 0) ? (_jsxs(Grid, { container: true, spacing: 2, alignItems: "top", mt: 2, children: [_jsx(Grid, { size: 6, children: _jsx(Box, { display: "flex", justifyContent: "flex-end", children: _jsx(Box, { component: "img", src: channelInfo.thumbnail }) }) }), _jsxs(Grid, { size: 2, children: [_jsx(Typography, { variant: 'h5', mt: 2, sx: { fontWeight: 'bold' }, children: channelInfo.channel }), _jsx(Typography, { variant: 'h6', children: channelInfo.handle }), _jsxs(Typography, { variant: 'h6', mt: 2, children: [channelInfo.subscribers.toLocaleString(), " subscribers"] })] })] })) : (_jsx(_Fragment, {})), _jsxs(Grid, { container: true, spacing: 3, children: [Array.isArray(videoList) && videoList.length > 0 && (_jsx(Grid, { size: 12, container: true, justifyContent: "center", mt: 2, children: _jsxs(Table, { children: [_jsx(TableHead, { children: _jsxs(TableRow, { children: [_jsx(TableCell, { children: "Video ID" }), _jsx(TableCell, { children: "Title" }), _jsx(TableCell, { children: "Upload Date" }), _jsx(TableCell, { children: "Video Type" }), _jsx(TableCell, { children: "Duration" }), _jsx(TableCell, { children: "Duration in S" }), _jsx(TableCell, { children: "View Count" }), _jsx(TableCell, { children: "Like Count" }), _jsx(TableCell, { children: "Comment Count" })] }) }), _jsx(TableBody, { children: videoList.slice(0, 10).map((video, index) => {
+                    }, children: [_jsx(DialogTitle, { children: "Retrieval Error" }), _jsxs(DialogContent, { children: ["The following error(s) occured", _jsx("br", {}), _jsx(Divider, { sx: { my: 1 } }), isChannelErr && (_jsxs(_Fragment, { children: [_jsx("strong", { children: "Channel Information:" }), " ", channelErrMsg] })), _jsx("br", {}), isVideoErr && (_jsxs(_Fragment, { children: [_jsx("strong", { children: "Video List Information:" }), " ", videoErrMsg] }))] }), _jsx(DialogActions, { children: _jsx(Button, { onClick: () => {
+                                    setIsChannelErr(false);
+                                    setIsVideoErr(false);
+                                }, color: "error", children: "Cancel" }) })] }) })) : (_jsx(_Fragment, {})), (videoList.length > 0) ? (_jsxs(Grid, { container: true, spacing: 2, alignItems: "top", mt: 2, children: [_jsx(Grid, { size: 6, children: _jsx(Box, { display: "flex", justifyContent: "flex-end", children: _jsx(Box, { component: "img", src: channelInfo.thumbnail }) }) }), _jsxs(Grid, { size: 2, children: [_jsx(Typography, { variant: 'h5', mt: 2, sx: { fontWeight: 'bold' }, children: channelInfo.channel }), _jsx(Typography, { variant: 'h6', children: channelInfo.handle }), _jsxs(Typography, { variant: 'h6', mt: 2, children: [channelInfo.subscribers.toLocaleString(), " subscribers"] })] })] })) : (_jsx(_Fragment, {})), _jsxs(Grid, { container: true, spacing: 3, children: [Array.isArray(videoList) && videoList.length > 0 && (_jsx(Grid, { size: 12, container: true, justifyContent: "center", mt: 2, children: _jsxs(Table, { children: [_jsx(TableHead, { children: _jsxs(TableRow, { children: [_jsx(TableCell, { children: "Video ID" }), _jsx(TableCell, { children: "Title" }), _jsx(TableCell, { children: "Upload Date" }), _jsx(TableCell, { children: "Video Type" }), _jsx(TableCell, { children: "Duration" }), _jsx(TableCell, { children: "Duration in S" }), _jsx(TableCell, { children: "View Count" }), _jsx(TableCell, { children: "Like Count" }), _jsx(TableCell, { children: "Comment Count" })] }) }), _jsx(TableBody, { children: videoList.slice(0, 10).map((video, index) => {
                                         return (_jsxs(TableRow, { children: [_jsx(TableCell, { children: video.VideoId }), _jsx(TableCell, { children: video.Title }), _jsx(TableCell, { children: video.UploadDate }), _jsx(TableCell, { children: video.VideoType }), _jsx(TableCell, { children: video.Duration }), _jsx(TableCell, { children: video.DurationInS.toLocaleString() }), _jsx(TableCell, { children: video.ViewCount.toLocaleString() }), _jsx(TableCell, { children: video.LikeCount.toLocaleString() }), _jsx(TableCell, { children: video.CommentCount.toLocaleString() })] }));
                                     }) })] }) })), (videoList.length > 0) ? (_jsx(Grid, { size: 12, container: true, justifyContent: "center", mt: 2, children: _jsx(Button, { variant: "contained", color: "primary", onClick: () => downloadCSV(`${handle}_output.csv`), children: "Download Output" }) })) : (_jsx(_Fragment, {}))] })] }));
 }
