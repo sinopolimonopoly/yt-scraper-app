@@ -10,6 +10,7 @@ import { Box } from '@mui/material';
 import { CircularProgress } from '@mui/material';
 import '@fontsource/roboto';
 const baseUrl = import.meta.env.VITE_BASE_URL;
+console.log(baseUrl, "top of menu");
 export default function Menu() {
     const [openConfirm, setOpenConfirm] = useState(false);
     const [handle, setHandle] = useState("");
@@ -95,7 +96,7 @@ export default function Menu() {
     };
     const callGetVideosScript = async (channelHandle, uploadTypes) => {
         try {
-            console.log(baseUrl);
+            console.log(baseUrl, "ashdahsddhs");
             const res = await fetch(`${baseUrl}/api/get-videos`, {
                 method: 'POST',
                 headers: {
