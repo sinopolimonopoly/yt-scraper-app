@@ -160,7 +160,8 @@ export default function Menu() {
     };
     const downloadCSV = async (filename) => {
         const link = document.createElement('a');
-        link.href = `http://localhost:3001/api/download/${filename}`;
+        link.href = `${baseUrl}/api/download/${filename}`;
+        console.log(link.href);
         link.setAttribute('download', filename);
         document.body.appendChild(link);
         link.click();

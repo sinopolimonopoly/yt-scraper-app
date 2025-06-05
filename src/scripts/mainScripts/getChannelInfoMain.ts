@@ -23,7 +23,7 @@ async function getChannelInfo(handle: string) {
         }
     }
 
-    const channelInfo = await getChannelIdInfo(channelId, apiKey);
+    const channelInfo = await getChannelIdInfo(apiKey, channelId)
 
     return {
         result: channelInfo,

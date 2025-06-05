@@ -1,4 +1,4 @@
-export async function getChannelIdInfo(channelId, apiKey) {
+export async function getChannelIdInfo(apiKey, channelId) {
     const url = `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelId}&key=${apiKey}`;
     const res = await fetch(url);
     const data = await res.json();

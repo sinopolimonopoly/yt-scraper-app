@@ -9,7 +9,7 @@ interface ChannelInfo {
     VideoCount: number;
 }
 
-export async function getChannelIdInfo(channelId: string, apiKey: string): Promise<ChannelInfo> {
+export async function getChannelIdInfo(apiKey: string, channelId: string): Promise<ChannelInfo> {
     
     const url = `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelId}&key=${apiKey}`
 

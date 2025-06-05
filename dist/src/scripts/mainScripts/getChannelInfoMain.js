@@ -16,7 +16,7 @@ async function getChannelInfo(handle) {
             errorMessage: `No channel found with handle ${handle}`
         };
     }
-    const channelInfo = await getChannelIdInfo(channelId, apiKey);
+    const channelInfo = await getChannelIdInfo(apiKey, channelId);
     return {
         result: channelInfo,
         error: false,
