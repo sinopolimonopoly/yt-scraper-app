@@ -12,12 +12,12 @@ interface PlaylistVideo {
     commentCount: number | string;
 }
 
-interface PlaylistVideoResults {
-    // info: {
-    //     [key: string]: PlaylistVideo;
-    // } | null;
-    // error: boolean;
-    // errorMessage: string;
+export interface PlaylistVideoResults {
+    info: {
+        [key: string]: PlaylistVideo;
+    } | null;
+    error: boolean;
+    errorMessage: string;
 }
 
 export async function getPlaylistVideosInfo(apiKey: string, videoIds: Array<string>): Promise<PlaylistVideoResults> {

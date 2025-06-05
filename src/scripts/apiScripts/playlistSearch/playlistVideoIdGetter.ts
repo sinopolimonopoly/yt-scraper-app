@@ -4,7 +4,7 @@ interface PlaylistVideoIdsInterface {
     errorMessage: string;
 }
 
-export async function getVideoIds(apiKey: string, playlistId: string): Promise<PlaylistVideoIdsInterface> {
+export async function getPlaylistVideoIds(apiKey: string, playlistId: string): Promise<PlaylistVideoIdsInterface> {
 
     let playlistVideoIds = []
     let nextPageToken = null;  
