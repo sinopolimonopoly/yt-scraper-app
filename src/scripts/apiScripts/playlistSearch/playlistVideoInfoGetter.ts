@@ -4,16 +4,16 @@ import { processDuration } from "../../helpers/durationProcessor";
 interface PlaylistVideo {
     title: string;
     uploadDate: string;
-    numericData: number;
+    numericDate: number;
     duration: string;
-    durationInS: number;
+    durationInS: number | string;
     viewCount: number | string;
     likeCount: number | string;
     commentCount: number | string;
 }
 
 export interface PlaylistVideoResults {
-    info: {
+    results: {
         [key: string]: PlaylistVideo;
     } | null;
     error: boolean;
@@ -21,7 +21,16 @@ export interface PlaylistVideoResults {
 }
 
 export async function getPlaylistVideosInfo(apiKey: string, videoIds: Array<string>): Promise<PlaylistVideoResults> {
-    let videos = createDefaultDict<Record<string, any>>(() => ({}));
+    let videos = createDefaultDict<PlaylistVideo>(() => ({
+        title: "",
+        uploadDate: "",
+        numericDate: 0,
+        duration: "",
+        durationInS: 0,
+        viewCount: 0,
+        likeCount: 0,
+        commentCount: 0,
+    }));
 
     for (let i = 0; i < videoIds.length; i += 50) {
         let batch = videoIds.slice(i, i+50);
@@ -39,7 +48,7 @@ export async function getPlaylistVideosInfo(apiKey: string, videoIds: Array<stri
             console.log("!!!! API Call Error !!!!")
             console.error("Error w API call:", err)
             return {
-                    info: null,
+                    results: null,
                     error: true,
                     errorMessage: `Error message: ${err}`
                 }
@@ -91,16 +100,16 @@ export async function getPlaylistVideosInfo(apiKey: string, videoIds: Array<stri
                 }
 
                 // Assigning data to current video ID object
-                videos[videoId]["Title"] = title;
-                videos[videoId]["UploadDate"] = uploadDate;
-                videos[videoId]["NumericDate"] = Number(uploadDate.replaceAll("-", ""));
+                videos[videoId].title = title;
+                videos[videoId].uploadDate = uploadDate;
+                videos[videoId].numericDate = Number(uploadDate.replaceAll("-", ""));
 
-                videos[videoId]["Duration"] = rawDuration;
-                videos[videoId]["DurationInS"] = processedDuration;
+                videos[videoId].duration = rawDuration;
+                videos[videoId].durationInS = processedDuration;
 
-                videos[videoId]["ViewCount"] = viewCount;
-                videos[videoId]["LikeCount"] = likeCount;
-                videos[videoId]["CommentCount"] = commentCount;
+                videos[videoId].viewCount = viewCount;
+                videos[videoId].likeCount = likeCount;
+                videos[videoId].commentCount = commentCount;
             }
 
             catch (err) {
@@ -112,7 +121,7 @@ export async function getPlaylistVideosInfo(apiKey: string, videoIds: Array<stri
     }
 
      return {
-        info: videos,
+        results: videos,
         error: false,
         errorMessage: ""
     }

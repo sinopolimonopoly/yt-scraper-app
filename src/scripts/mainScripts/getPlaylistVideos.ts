@@ -31,10 +31,6 @@ async function getPlaylistVideos(playlistId: string): Promise<PlaylistVideoResul
     }
 
     else {
-        return {
-            results: playlistVideos.info,
-            error: false,
-            errorMessage: ""
-        }
+        return playlistVideos
     }
 }

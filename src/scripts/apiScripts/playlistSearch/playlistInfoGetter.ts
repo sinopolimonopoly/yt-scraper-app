@@ -6,13 +6,13 @@ interface PlaylistInfo {
     videoCount: number;
 }
 
-interface PlaylistInterface {
-    info: PlaylistInfo | null;
+export interface PlaylistInfoInterface {
+    results: PlaylistInfo | null;
     error: Boolean;
     errorMessage: string;
 }
 
-export async function getPlaylistInfo(apiKey: string, playlistId: string): Promise<PlaylistInterface> {
+export async function getPlaylistInfo(apiKey: string, playlistId: string): Promise<PlaylistInfoInterface> {
     const url = `https://www.googleapis.com/youtube/v3/playlists?part=snippet,contentDetails&id=${playlistId}&key=${apiKey}`
 
     const res = await fetch(url);
@@ -20,14 +20,14 @@ export async function getPlaylistInfo(apiKey: string, playlistId: string): Promi
 
     if (data.pageInfo.totalResults == 0) {
         return {
-            info: null,
+            results: null,
             error: false,
             errorMessage: ""
         }
     } 
 
     return {
-        info: {
+        results: {
             title: data.items[0].snippet.title,
             description: data.items[0].snippet.description,
             createDate: data.items[0].snippet.publishedAt.slice(0,10),

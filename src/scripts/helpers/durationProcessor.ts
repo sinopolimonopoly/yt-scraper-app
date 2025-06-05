@@ -54,11 +54,12 @@ export function processDuration(rawDuration: string, vidItem: any) {
 
         let durationInS = daySecs + hrSecs + minSecs + secSecs
 
-        return durationInS
+        return Number(durationInS)
     }
 
     catch (error) {
         console.log("~~~~~~~~ Duration Processing Error ~~~~~~~~~~")
         console.error(`Video Item: ${vidItem}`)
+        return 0
     }
 }
