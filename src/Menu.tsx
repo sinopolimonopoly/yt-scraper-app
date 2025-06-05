@@ -7,6 +7,7 @@ import { Divider } from '@mui/material';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { Box } from '@mui/material';
 import { CircularProgress } from '@mui/material';
+import { Switch } from '@mui/material';
 
 import '@fontsource/roboto';
 
@@ -18,12 +19,14 @@ console.log(baseUrl, "top of menu")
 export default function Menu() {
 
     const [openConfirm, setOpenConfirm] = useState(false);
-    const [handle, setHandle] = useState("");
+    const [input, setInput] = useState("");
     const [selectedTypes, setSelectedTypes] = useState({
         long: false,
         short: false,
         live: false
     });
+
+    const [isToggled, setIsToggled] = useState(true);
 
     const [videoList, setvideoList] = useState<any[]>([]);
     const [isVideoErr, setIsVideoErr] = useState(false);
@@ -49,7 +52,11 @@ export default function Menu() {
                 console.log(channelInfo);
             }, [videoList]);
 
-    const isFormValid = handle.trim() !== "" && Object.values(selectedTypes).some(Boolean);
+    const isFormValid = input.trim() !== "" && Object.values(selectedTypes).some(Boolean);
+
+    const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setIsToggled(event.target.checked)
+    }
 
     const handleClickOpen = () => {
         setOpenConfirm(true);
@@ -225,48 +232,58 @@ export default function Menu() {
 
                 <Grid size={12}>
                     <Typography variant='h4' align='center'>
-                        Enter a channel's handle and select which videos you'd like to retrieve
+                        Fetch all videos from a specified channel or playlist
                     </Typography>
                 </Grid>
 
-                <Grid size={12} justifyContent="center" display={"flex"}>
+                <Grid size={7} justifyContent="right" display={"flex"}>
                     <TextField fullWidth 
                         id="channel-handle" 
-                        label="Handle" 
+                        label={isToggled ? 'Handle' : 'Playlist ID'}
                         variant="outlined"
-                        onChange={(e) => setHandle(e.target.value)}
+                        onChange={(e) => setInput(e.target.value)}
                         sx={{ width: '400px' }}
                     />
                 </Grid>
 
-                <Grid size={12} container justifyContent="center">
-                    <FormControl component="fieldset">
-                        <FormGroup aria-label="upload-type" row sx={{ justifyContent: "center"}}>
-                            <FormControlLabel
-                                value="longs"
-                                control={<Checkbox checked={selectedTypes.long} onChange={handleCheckboxChange} name="long"/>}
-                                label="Long Form"
-                                labelPlacement="bottom"
-                                sx={{ alignItems: "center", margin: 2 }}
-                            />
-                            <FormControlLabel
-                                value="shorts"
-                                control={<Checkbox checked={selectedTypes.short} onChange={handleCheckboxChange} name="short"/>}
-                                label="Shorts"
-                                labelPlacement="bottom"
-                                sx={{ alignItems: "center", margin: 2 }}
-                            />
-                            <FormControlLabel
-                                value="livestreams"
-                                control={<Checkbox checked={selectedTypes.live} onChange={handleCheckboxChange} name="live"/>}
-                                label="Livestreams"
-                                labelPlacement="bottom"
-                                sx={{ alignItems: "center", margin: 2 }}
-                            />
-                        </FormGroup>
-                    </FormControl>
+                <Grid size={5} justifyContent="left" display={"flex"}>
+                    <FormControlLabel
+                        control={<Switch checked={isToggled} onChange={handleSwitchChange} />}
+                        label={isToggled ? 'Channel' : 'Playlist'} 
+                    />
                 </Grid>
-
+                { isToggled ? 
+                    <Grid size={12} container justifyContent="center">
+                        <FormControl component="fieldset">
+                            <FormGroup aria-label="upload-type" row sx={{ justifyContent: "center"}}>
+                                <FormControlLabel
+                                    value="longs"
+                                    control={<Checkbox checked={selectedTypes.long} onChange={handleCheckboxChange} name="long"/>}
+                                    label="Long Form"
+                                    labelPlacement="bottom"
+                                    sx={{ alignItems: "center", margin: 2 }}
+                                />
+                                <FormControlLabel
+                                    value="shorts"
+                                    control={<Checkbox checked={selectedTypes.short} onChange={handleCheckboxChange} name="short"/>}
+                                    label="Shorts"
+                                    labelPlacement="bottom"
+                                    sx={{ alignItems: "center", margin: 2 }}
+                                />
+                                <FormControlLabel
+                                    value="livestreams"
+                                    control={<Checkbox checked={selectedTypes.live} onChange={handleCheckboxChange} name="live"/>}
+                                    label="Livestreams"
+                                    labelPlacement="bottom"
+                                    sx={{ alignItems: "center", margin: 2 }}
+                                />
+                            </FormGroup>
+                        </FormControl>
+                    </Grid>
+                    :
+                    <>
+                    </>
+                }
                 <Grid size={12} container justifyContent="center" mt={2}>
                     <Button variant="contained" color="primary" onClick={handleClickOpen}>
                         {loading ? "Loading... " : "Fetch Videos"}
@@ -289,7 +306,7 @@ export default function Menu() {
                         <DialogContent>
                             Are you sure you want to retrieve the following uploads from channel 
                             <br />
-                            @<strong>{handle}</strong>?
+                            @<strong>{input}</strong>?
                         </DialogContent>
                         <Divider />
                         <DialogContent>
@@ -310,7 +327,7 @@ export default function Menu() {
                                 <Button onClick={() => setOpenConfirm(false)} color="error">
                                     Cancel
                                 </Button>
-                                <Button onClick={() => handleClick(handle.trim(), getSelectedTypes())} color="primary">
+                                <Button onClick={() => handleClick(input.trim(), getSelectedTypes())} color="primary">
                                     Fetch Uploads
                                 </Button>
                             </>
@@ -416,7 +433,7 @@ export default function Menu() {
                                     <TableCell>Video ID</TableCell>
                                     <TableCell>Title</TableCell>
                                     <TableCell>Upload Date</TableCell>
-                                    <TableCell>Video Type</TableCell>
+                                    {isToggled ? <TableCell>Video Type</TableCell> : <></>}
                                     <TableCell>Duration</TableCell>
                                     <TableCell>Duration in S</TableCell>
                                     <TableCell>View Count</TableCell>
@@ -432,7 +449,7 @@ export default function Menu() {
                                             <TableCell>{video.VideoId}</TableCell>
                                             <TableCell>{video.Title}</TableCell>
                                             <TableCell>{video.UploadDate}</TableCell>
-                                            <TableCell>{video.VideoType}</TableCell>
+                                            {isToggled ? <TableCell>{video.VideoType}</TableCell> : <></>}
                                             <TableCell>{video.Duration}</TableCell>
                                             <TableCell>{video.DurationInS.toLocaleString()}</TableCell>
                                             <TableCell>{video.ViewCount.toLocaleString()}</TableCell>
@@ -448,7 +465,7 @@ export default function Menu() {
 
                 {(videoList.length > 0) ? (
                     <Grid size={12} container justifyContent="center" mt={2}>
-                        <Button variant="contained" color="primary" onClick={() => downloadCSV(`${handle}_output.csv`)}>
+                        <Button variant="contained" color="primary" onClick={() => downloadCSV(`${input}_output.csv`)}>
                             Download Output
                         </Button>
                     </Grid>
