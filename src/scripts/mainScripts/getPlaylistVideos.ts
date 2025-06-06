@@ -14,7 +14,7 @@ async function getPlaylistVideos(playlistId: string): Promise<PlaylistVideoResul
 
     if (playlistVidIds.error == true) {
         return {
-            results: null,
+            result: null,
             error: true,
             errorMessage: playlistVidIds.errorMessage
         }
@@ -24,7 +24,7 @@ async function getPlaylistVideos(playlistId: string): Promise<PlaylistVideoResul
 
     if (playlistVideos.error == true) {
         return {
-            results: null,
+            result: null,
             error: true,
             errorMessage: playlistVideos.errorMessage
         }

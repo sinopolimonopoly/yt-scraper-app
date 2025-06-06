@@ -12,7 +12,7 @@ async function getPlaylistInfo(playlistId: string): Promise<PlaylistInfoInterfac
 
     if (playlistInfo.error == true) {
         return {
-            results: null,
+            result: null,
             error: true,
             errorMessage: playlistInfo.errorMessage
         }

@@ -8,7 +8,7 @@ async function getPlaylistInfo(playlistId) {
     const playlistInfo = await retrievePlaylistInfo(apiKey, playlistId);
     if (playlistInfo.error == true) {
         return {
-            results: null,
+            result: null,
             error: true,
             errorMessage: playlistInfo.errorMessage
         };

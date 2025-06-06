@@ -4,18 +4,19 @@ export async function retrievePlaylistInfo(apiKey, playlistId) {
     const data = await res.json();
     if (data.pageInfo.totalResults == 0) {
         return {
-            results: null,
+            result: null,
             error: false,
             errorMessage: ""
         };
     }
     return {
-        results: {
+        result: {
             title: data.items[0].snippet.title,
             description: data.items[0].snippet.description,
             createDate: data.items[0].snippet.publishedAt.slice(0, 10),
             channel: data.items[0].snippet.channelTitle,
-            videoCount: data.items[0].contentDetails.itemCount
+            videoCount: data.items[0].contentDetails.itemCount,
+            thumbnail: data.items[0].snippet.thumbnails.default.url
         },
         error: false,
         errorMessage: ""

@@ -13,7 +13,7 @@ interface PlaylistVideo {
 }
 
 export interface PlaylistVideoResults {
-    results: {
+    result: {
         [key: string]: PlaylistVideo;
     } | null;
     error: boolean;
@@ -48,7 +48,7 @@ export async function getPlaylistVideosInfo(apiKey: string, videoIds: Array<stri
             console.log("!!!! API Call Error !!!!")
             console.error("Error w API call:", err)
             return {
-                    results: null,
+                    result: null,
                     error: true,
                     errorMessage: `Error message: ${err}`
                 }
@@ -121,7 +121,7 @@ export async function getPlaylistVideosInfo(apiKey: string, videoIds: Array<stri
     }
 
      return {
-        results: videos,
+        result: videos,
         error: false,
         errorMessage: ""
     }

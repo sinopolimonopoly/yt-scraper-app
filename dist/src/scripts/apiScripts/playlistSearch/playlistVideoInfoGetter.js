@@ -24,7 +24,7 @@ export async function getPlaylistVideosInfo(apiKey, videoIds) {
             console.log("!!!! API Call Error !!!!");
             console.error("Error w API call:", err);
             return {
-                results: null,
+                result: null,
                 error: true,
                 errorMessage: `Error message: ${err}`
             };
@@ -83,7 +83,7 @@ export async function getPlaylistVideosInfo(apiKey, videoIds) {
         }
     }
     return {
-        results: videos,
+        result: videos,
         error: false,
         errorMessage: ""
     };

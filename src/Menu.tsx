@@ -28,9 +28,7 @@ export default function Menu() {
 
     const [isToggled, setIsToggled] = useState(true);
 
-    const [videoList, setvideoList] = useState<any[]>([]);
-    const [isVideoErr, setIsVideoErr] = useState(false);
-    const [videoErrMsg, setvideoErrMsg] = useState("")
+    const [chanVideoList, setChanVideoList] = useState<any[]>([]);
 
     const [channelInfo, setChannelInfo] = useState({
         channel: "",
@@ -38,19 +36,34 @@ export default function Menu() {
         subscribers: 0,
         thumbnail: ""
     })
-    const [isChannelErr, setIsChannelErr] = useState(false);
-    const [channelErrMsg, setChannelErrMsg] = useState("")
+
+    const [pListVideoList, setPListVideoList] = useState<any[]>([]);
+
+    const [playlistInfo, setPlaylistInfo] = useState({
+        title: "",
+        description: "",
+        createDate: "",
+        channel: "",
+        videoCount: 0,
+        thumbnail: ""
+    })
+
+    const [isVideoErr, setIsVideoErr] = useState(false);
+    const [videoErrMsg, setvideoErrMsg] = useState("")
+
+    const [isInfoErr, setIsInfoErr] = useState(false);
+    const [infoErrMsg, setInfoErrMsg] = useState("")
 
     const [loading, setLoading] = useState(false);
 
     const [openErrDialog, setOpenErrDialog] = useState(false);
 
     useEffect(() => {
-                console.log("VIDEO RESULTS updated", videoList);
-                console.log(videoList.length);
-                console.log(Array.isArray(videoList));
+                console.log("VIDEO RESULTS updated", chanVideoList);
+                console.log(chanVideoList.length);
+                console.log(Array.isArray(chanVideoList));
                 console.log(channelInfo);
-            }, [videoList]);
+            }, [chanVideoList]);
 
     const isFormValid = input.trim() !== "" && Object.values(selectedTypes).some(Boolean);
 
@@ -60,7 +73,7 @@ export default function Menu() {
 
     const handleClickOpen = () => {
         setOpenConfirm(true);
-        setIsChannelErr(false);
+        setIsInfoErr(false);
         setIsVideoErr(false);
     }
 
@@ -71,7 +84,7 @@ export default function Menu() {
     const handleChannelClick = async (handle: string, selectedTypes: UploadType[]) => {
         setLoading(true);    
         // Fetch api results
-        const chanInfo = await callGetChannelInfoScript(handle);
+        const chanInfo = await callGetChanInfoScript(handle);
 
         // Set channel info states
         setChannelInfo({
@@ -80,22 +93,22 @@ export default function Menu() {
             subscribers: chanInfo.result.SubCount,
             thumbnail: chanInfo.result.ThumbnailUrl
         });
-        setIsChannelErr(chanInfo.error);
-        setChannelErrMsg(chanInfo.errorMessage);
+        setIsInfoErr(chanInfo.error);
+        setInfoErrMsg(chanInfo.errorMessage);
 
         if (chanInfo.error == false) { 
 
-            const vidList = await callGetVideosScript(handle, selectedTypes);
+            const vidList = await callGetChanVideosScript(handle, selectedTypes);
 
             // Set video list states
-            setvideoList(vidList.result);
+            setChanVideoList(vidList.result);
             setIsVideoErr(vidList.error);
             setvideoErrMsg(vidList.errorMessage);
         }
 
         else if (chanInfo.error == true) {
-            console.log("WE HIT A ERROR")
-            setvideoList([]);
+            console.log("CHANNEL INFO ERROR")
+            setChanVideoList([]);
             setIsVideoErr(true);
             setvideoErrMsg("Unable to reach channel, so no attempt was made to fetch videos.");
         }
@@ -104,6 +117,42 @@ export default function Menu() {
         setOpenConfirm(false);
         setLoading(false);
     }
+
+    const handlePlaylistClick = async (playlistId: string) => {
+        setLoading(true);
+
+        const pListInfo = await callGetPlistInfoScript(playlistId);
+
+        setPlaylistInfo({
+            title: pListInfo.result.title,
+            description: pListInfo.result.description,
+            createDate: pListInfo.result.createDate,
+            channel: pListInfo.result.channel,
+            videoCount: pListInfo.result.videoCount,
+            thumbnail: pListInfo.result.thumbnail
+        })
+        setIsInfoErr(pListInfo.error)
+        setInfoErrMsg(pListInfo.errorMessage);
+
+        if (pListInfo.error == false) {
+            const pListVidList = await callGetPlistVideoScript(playlistId);
+
+            setPListVideoList(pListVidList.result)
+            setIsVideoErr(pListVidList.error);
+            setvideoErrMsg(pListVidList.errorMessage);
+        }
+
+        else if (pListInfo.error == true) {
+            console.log("PLAYLIST INFO ERROR")
+            setPListVideoList([]);
+            setIsVideoErr(true);
+            setvideoErrMsg("Unable to reach playlist, so no attempt was made to fetch videos.");
+        }
+
+        setOpenConfirm(false);
+        setLoading(false);
+    }
+
 
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedTypes({
@@ -126,9 +175,8 @@ export default function Menu() {
         return selected;
     }
 
-    const callGetVideosScript = async(channelHandle: string, uploadTypes: UploadType[]) => {
+    const callGetChanVideosScript = async(channelHandle: string, uploadTypes: UploadType[]) => {
         try {
-            console.log(baseUrl,"ashdahsddhs");
             const res = await fetch(`${baseUrl}/api/get-channel-videos`, {
                 method: 'POST',
                 headers: {
@@ -143,8 +191,7 @@ export default function Menu() {
 
             
         } catch (err: any) {
-            console.log(baseUrl)
-            console.log("FRONT END GET VIDEOS ERROR");
+            console.log("FRONT END GET CHANNEL VIDEOS ERROR");
             console.error("ERROR", err);
             return {
                 result: [],
@@ -186,7 +233,7 @@ export default function Menu() {
         }
     }
 
-    const callGetChannelInfoScript = async(channelHandle: string) => {
+    const callGetChanInfoScript = async(channelHandle: string) => {
         try {
             const res = await fetch(`${baseUrl}/api/get-channel-info`, {
                 method: 'POST',
@@ -196,15 +243,59 @@ export default function Menu() {
                 body: JSON.stringify({ channelHandle })
             });
             
-            const infoResults = await res.json();
+            const chanInfoResults = await res.json();
 
-            return infoResults
+            return chanInfoResults
 
 
             //console.log(data);
             } catch (err: any) {
-            console.log(baseUrl)
             console.log("FRONT END CHANNEL INFO ERROR");
+            console.error("ERROR", err);
+        }
+    }
+
+    const callGetPlistVideoScript = async(playlistId: string) => {
+        try {
+            const res = await fetch(`${baseUrl}/api/get-playlist-videos`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ playlistId })
+            })
+
+            const data = await res.json();
+
+            return processGetVideos(data);
+
+        } catch (err: any) {
+            console.log("FRONT END GET CHANNEL VIDEOS ERROR");
+            console.error("ERROR", err);
+            return {
+                result: [],
+                error: true,
+                errorMessage: "Network error",
+             };
+        }
+    }
+
+    const callGetPlistInfoScript = async(playlistId: string) => {
+        try {
+            const res = await fetch(`${baseUrl}/api/get-playlist-info`, {
+                method: 'POST',
+                headers : {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ playlistId })
+            });
+            
+            const plistInfoResults = await res.json();
+
+            return plistInfoResults
+
+        } catch (err: any) {
+            console.log("FRONT END PLIST INFO ERROR");
             console.error("ERROR", err);
         }
     }
@@ -304,14 +395,31 @@ export default function Menu() {
                         <>
                         <DialogTitle>Verify Request</DialogTitle>
                         <DialogContent>
-                            Are you sure you want to retrieve the following uploads from channel 
-                            <br />
-                            @<strong>{input}</strong>?
+                            {isToggled ? (
+                                <>
+                                Are you sure you want to fetch results from channel 
+                                <br />
+                                @<strong>{input}</strong>?
+                                </>
+                            ) : (
+                                <>
+                                Are you sure you want to fetch videos from the playlist with the following id: 
+                                <br />
+                                <strong>{input}</strong>?
+                                </>
+                            )}
                         </DialogContent>
-                        <Divider />
-                        <DialogContent>
-                            {getSelectedTypes().join(' & ')}
-                        </DialogContent>
+                        {isToggled ? (
+                            <>
+                            <Divider />
+                            <DialogContent>
+                                <>
+                                Video Types:
+                                <br />
+                                {getSelectedTypes().join(' & ')}</>
+                            </DialogContent>
+                            </> ) : ( <> </> )
+                        }
                         </>
                     ) :
                         <> 
@@ -327,8 +435,12 @@ export default function Menu() {
                                 <Button onClick={() => setOpenConfirm(false)} color="error">
                                     Cancel
                                 </Button>
-                                <Button onClick={() => handleChannelClick(input.trim(), getSelectedTypes())} color="primary">
-                                    Fetch Uploads
+                                <Button onClick={() => 
+                                    isToggled 
+                                    ? handleChannelClick(input.trim(), getSelectedTypes())
+                                    : handlePlaylistClick(input.trim())
+                                } color="primary">
+                                    {isToggled ? 'Fetch Channel Uploads' : 'Fetch Playlist Videos'}
                                 </Button>
                             </>
                         ) : (
@@ -345,10 +457,10 @@ export default function Menu() {
                 
             </Grid>
 
-                {(isChannelErr || isVideoErr) ? (
+                {(isInfoErr || isVideoErr) ? (
                     <>
                     <Dialog 
-                        open={isChannelErr || isVideoErr} 
+                        open={isInfoErr || isVideoErr} 
                         onClose={handleClose}
                         sx={{ '& .MuiDialogTitle-root, & .MuiDialogContent-root, & .MuiDialogActions-root': {
                                 fontFamily: 'Roboto, Arial, sans-serif',
@@ -360,9 +472,9 @@ export default function Menu() {
                             The following error(s) occured
                             <br/>
                             <Divider sx={{my: 1}}/>
-                            {isChannelErr && (
+                            {isInfoErr && (
                                 <>
-                                <strong>Channel Information:</strong> {channelErrMsg}
+                                <strong>Channel Information:</strong> {infoErrMsg}
                                 </>
                             ) }
                             <br/>
@@ -374,7 +486,7 @@ export default function Menu() {
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={() => {
-                                setIsChannelErr(false);
+                                setIsInfoErr(false);
                                 setIsVideoErr(false);
                                 }} 
                                 color="error">
@@ -389,7 +501,7 @@ export default function Menu() {
                 )
                 }
 
-                {(videoList.length > 0) ? (
+                {(chanVideoList.length > 0 || pListVideoList.length > 0) ? (
                     
                     <Grid container spacing={2} alignItems="top" mt={2}>
                     {/* LEFT: Image */}
@@ -425,7 +537,7 @@ export default function Menu() {
 
             <Grid container spacing={3}>
                 
-                {Array.isArray(videoList) && videoList.length > 0 && (
+                {Array.isArray(chanVideoList) && chanVideoList.length > 0 && (
                     <Grid size={12} container justifyContent="center" mt={2}>
                         <Table>
                             <TableHead>
@@ -443,7 +555,7 @@ export default function Menu() {
                             </TableHead>
 
                             <TableBody>
-                                {videoList.slice(0,10).map((video, index) => {
+                                {chanVideoList.slice(0,10).map((video, index) => {
                                     return (
                                         <TableRow>
                                             <TableCell>{video.VideoId}</TableCell>
@@ -463,7 +575,7 @@ export default function Menu() {
                     </Grid>
                 )}
 
-                {(videoList.length > 0) ? (
+                {(chanVideoList.length > 0) ? (
                     <Grid size={12} container justifyContent="center" mt={2}>
                         <Button variant="contained" color="primary" onClick={() => downloadCSV(`${input}_output.csv`)}>
                             Download Output

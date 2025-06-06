@@ -9,7 +9,7 @@ async function getPlaylistVideos(playlistId) {
     const playlistVidIds = await getPlaylistVideoIds(apiKey, playlistId);
     if (playlistVidIds.error == true) {
         return {
-            results: null,
+            result: null,
             error: true,
             errorMessage: playlistVidIds.errorMessage
         };
@@ -17,7 +17,7 @@ async function getPlaylistVideos(playlistId) {
     const playlistVideos = await getPlaylistVideosInfo(apiKey, playlistVidIds.videoIds ?? []);
     if (playlistVideos.error == true) {
         return {
-            results: null,
+            result: null,
             error: true,
             errorMessage: playlistVideos.errorMessage
         };
