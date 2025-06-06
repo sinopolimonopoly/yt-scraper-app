@@ -16,7 +16,7 @@ export async function retrievePlaylistInfo(apiKey, playlistId) {
             createDate: data.items[0].snippet.publishedAt.slice(0, 10),
             channel: data.items[0].snippet.channelTitle,
             videoCount: data.items[0].contentDetails.itemCount,
-            thumbnail: data.items[0].snippet.thumbnails.default.url
+            thumbnail: data.items[0].snippet.thumbnails.medium.url
         },
         error: false,
         errorMessage: ""

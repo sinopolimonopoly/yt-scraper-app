@@ -2,6 +2,7 @@ import { getPlaylistVideoIds } from "../apiScripts/playlistSearch/playlistVideoI
 import { getPlaylistVideosInfo } from "../apiScripts/playlistSearch/playlistVideoInfoGetter.js";
 
 import { PlaylistVideoResults } from "../apiScripts/playlistSearch/playlistVideoInfoGetter.js";
+import { createVideoCsv } from "./csvMaker.js";
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -9,7 +10,7 @@ dotenv.config();
 const apiKey = process.env.API_KEY!;
 if (!apiKey) throw new Error("Missing API_KEY in environment variables");
 
-async function getPlaylistVideos(playlistId: string): Promise<PlaylistVideoResults> {
+async function getPlaylistVideos(playlistId: string, channel: string): Promise<PlaylistVideoResults> {
     const playlistVidIds = await getPlaylistVideoIds(apiKey, playlistId);
 
     if (playlistVidIds.error == true) {
@@ -31,6 +32,7 @@ async function getPlaylistVideos(playlistId: string): Promise<PlaylistVideoResul
     }
 
     else {
+        createVideoCsv(playlistVideos.result, channel.split(" "), false);
         return playlistVideos
     }
 }

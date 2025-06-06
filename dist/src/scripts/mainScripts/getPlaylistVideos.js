@@ -1,5 +1,6 @@
 import { getPlaylistVideoIds } from "../apiScripts/playlistSearch/playlistVideoIdGetter.js";
 import { getPlaylistVideosInfo } from "../apiScripts/playlistSearch/playlistVideoInfoGetter.js";
+import { createVideoCsv } from "./csvMaker.js";
 import dotenv from 'dotenv';
 dotenv.config();
 const apiKey = process.env.API_KEY;
@@ -23,6 +24,7 @@ async function getPlaylistVideos(playlistId) {
         };
     }
     else {
+        createVideoCsv(playlistVideos, playlistId, false);
         return playlistVideos;
     }
 }

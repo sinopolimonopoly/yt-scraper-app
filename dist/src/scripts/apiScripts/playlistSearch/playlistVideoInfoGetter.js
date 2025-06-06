@@ -2,14 +2,14 @@ import { createDefaultDict } from "../../helpers/defaultdict.js";
 import { processDuration } from "../../helpers/durationProcessor.js";
 export async function getPlaylistVideosInfo(apiKey, videoIds) {
     let videos = createDefaultDict(() => ({
-        title: "",
-        uploadDate: "",
-        numericDate: 0,
-        duration: "",
-        durationInS: 0,
-        viewCount: 0,
-        likeCount: 0,
-        commentCount: 0,
+        Title: "",
+        UploadDate: "",
+        NumericDate: 0,
+        Duration: "",
+        DurationInS: 0,
+        ViewCount: 0,
+        LikeCount: 0,
+        CommentCount: 0,
     }));
     for (let i = 0; i < videoIds.length; i += 50) {
         let batch = videoIds.slice(i, i + 50);
@@ -66,14 +66,14 @@ export async function getPlaylistVideosInfo(apiKey, videoIds) {
                     commentCount = "Disabled";
                 }
                 // Assigning data to current video ID object
-                videos[videoId].title = title;
-                videos[videoId].uploadDate = uploadDate;
-                videos[videoId].numericDate = Number(uploadDate.replaceAll("-", ""));
-                videos[videoId].duration = rawDuration;
-                videos[videoId].durationInS = processedDuration;
-                videos[videoId].viewCount = viewCount;
-                videos[videoId].likeCount = likeCount;
-                videos[videoId].commentCount = commentCount;
+                videos[videoId].Title = title;
+                videos[videoId].UploadDate = uploadDate;
+                videos[videoId].NumericDate = Number(uploadDate.replaceAll("-", ""));
+                videos[videoId].Duration = rawDuration;
+                videos[videoId].DurationInS = processedDuration;
+                videos[videoId].ViewCount = viewCount;
+                videos[videoId].LikeCount = likeCount;
+                videos[videoId].CommentCount = commentCount;
             }
             catch (err) {
                 console.log("---------- Video Info Error -----------");

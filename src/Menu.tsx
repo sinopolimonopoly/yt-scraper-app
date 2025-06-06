@@ -137,7 +137,7 @@ export default function Menu() {
         if (pListInfo.error == false) {
             const pListVidList = await callGetPlistVideoScript(playlistId);
 
-            setPListVideoList(pListVidList.result)
+            setChanVideoList(pListVidList.result)
             setIsVideoErr(pListVidList.error);
             setvideoErrMsg(pListVidList.errorMessage);
         }
@@ -509,22 +509,29 @@ export default function Menu() {
                             <Box display="flex" justifyContent="flex-end">
                                 <Box
                                     component="img"
-                                    src={channelInfo.thumbnail}
+                                    src={isToggled ? channelInfo.thumbnail : playlistInfo.thumbnail}
                                 />
                             </Box>
                             
                         </Grid>
 
-                        <Grid size={2}>
+                        <Grid size={4}>
                             <Typography variant='h5' mt={2} sx={{ fontWeight:'bold'}}>
-                                {channelInfo.channel}
+                                {isToggled ? channelInfo.channel : playlistInfo.title}
                             </Typography>
                             <Typography variant='h6'>
-                                {channelInfo.handle}
+                                {isToggled ? channelInfo.handle : `by ${playlistInfo.channel}`}
                             </Typography>
-                            <Typography variant='h6' mt={2}>
-                                {channelInfo.subscribers.toLocaleString()} subscribers
+                            <Typography variant='h6' mt={1}>
+                                {isToggled ? `${channelInfo.subscribers.toLocaleString()} subscribers` : `${playlistInfo.videoCount} videos`}
                             </Typography>
+                            
+                            {isToggled ? 
+                            <> </> : (
+                                <Typography variant='h6'>
+                                    {`Created ${playlistInfo.createDate}`}
+                                </Typography>
+                            )}
                         </Grid>
 
                     </Grid>
@@ -563,10 +570,10 @@ export default function Menu() {
                                             <TableCell>{video.UploadDate}</TableCell>
                                             {isToggled ? <TableCell>{video.VideoType}</TableCell> : <></>}
                                             <TableCell>{video.Duration}</TableCell>
-                                            <TableCell>{video.DurationInS.toLocaleString()}</TableCell>
-                                            <TableCell>{video.ViewCount.toLocaleString()}</TableCell>
-                                            <TableCell>{video.LikeCount.toLocaleString()}</TableCell>
-                                            <TableCell>{video.CommentCount.toLocaleString()}</TableCell>
+                                            <TableCell>{video.DurationInS}</TableCell>
+                                            <TableCell>{video.ViewCount}</TableCell>
+                                            <TableCell>{video.LikeCount}</TableCell>
+                                            <TableCell>{video.CommentCount}</TableCell>
                                         </TableRow>
                                     )
                                 })}
@@ -577,7 +584,7 @@ export default function Menu() {
 
                 {(chanVideoList.length > 0) ? (
                     <Grid size={12} container justifyContent="center" mt={2}>
-                        <Button variant="contained" color="primary" onClick={() => downloadCSV(`${input}_output.csv`)}>
+                        <Button variant="contained" color="primary" onClick={() => downloadCSV(isToggled ? `${input}_output.csv`: `${playlistInfo.channel.split(" ").join("_")}_playlist.csv`)}>
                             Download Output
                         </Button>
                     </Grid>

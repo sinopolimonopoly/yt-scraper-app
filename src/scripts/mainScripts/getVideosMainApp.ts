@@ -37,7 +37,7 @@ async function getVideos(handle: string, uploadTypes: UploadType[]) {
         const sortedEntries = Object.entries(videos).sort(([, a], [, b]) => b.NumericDate - a.NumericDate)
 
         const sortedVideos = Object.fromEntries(sortedEntries)
-        createVideoCsv(sortedVideos, handle);
+        createVideoCsv(sortedVideos, handle, true);
 
         return {
             result: sortedVideos,
