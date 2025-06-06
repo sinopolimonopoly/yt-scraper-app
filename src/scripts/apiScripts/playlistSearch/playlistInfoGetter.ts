@@ -12,7 +12,7 @@ export interface PlaylistInfoInterface {
     errorMessage: string;
 }
 
-export async function getPlaylistInfo(apiKey: string, playlistId: string): Promise<PlaylistInfoInterface> {
+export async function retrievePlaylistInfo(apiKey: string, playlistId: string): Promise<PlaylistInfoInterface> {
     const url = `https://www.googleapis.com/youtube/v3/playlists?part=snippet,contentDetails&id=${playlistId}&key=${apiKey}`
 
     const res = await fetch(url);

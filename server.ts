@@ -2,10 +2,12 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 
+import getChannelInfo from './src/scripts/mainScripts/getChannelInfoMain.js';
 import getVideos from './src/scripts/mainScripts/getVideosMainApp.js';
 import { UploadType } from './src/scripts/apiScripts/playlistIdGetter.js';
 
-import getChannelInfo from './src/scripts/mainScripts/getChannelInfoMain.js';
+import getPlaylistInfo from './src/scripts/mainScripts/getPlaylistInfo.js';
+import getPlaylistVideos from './src/scripts/mainScripts/getPlaylistVideos.js';
 
 const app = express();
 app.use(cors());
@@ -16,7 +18,24 @@ app.listen(3001, '0.0.0.0', () => {
   console.log("Guys I think it's working");
 });
 
-app.post('/api/get-videos', async (req, res) => {
+app.post('/api/get-channel-info', async (req, res) => {
+    try {
+        const { channelHandle } = req.body;
+
+        const result = await getChannelInfo(channelHandle);
+
+        console.log("before res jsoning", result)
+
+        res.json(result);
+
+        console.log("server ts output", result)
+    } catch (err: any) {
+        console.log("BACK END GET CHANNEL INFO ERROR");
+        console.error("Error: ", err)
+    }
+})
+
+app.post('/api/get-channel-videos', async (req, res) => {
     try {
 
         console.log("req.body", req.body);
@@ -36,23 +55,38 @@ app.post('/api/get-videos', async (req, res) => {
     }
 }); 
 
-app.post('/api/get-channel-info', async (req, res) => {
+app.post('/api/get-playlist-info', async (req, res) => {
     try {
-        const { channelHandle } = req.body;
+        const { playlistId } = req.body
 
-        const result = await getChannelInfo(channelHandle);
+        const result = await getPlaylistInfo(playlistId)
 
-        console.log("before res jsoning", result)
+        console.log("BACK END PLIST INFO RESULTS: ", result)
+        res.json(result)
 
-        res.json(result);
-
-        console.log("server ts output", result)
     } catch (err: any) {
-        console.log("BACK END GET CHANNEL INFO ERROR");
+        console.log("BACK END GET PLIST INFO ERROR");
         console.error("Error: ", err)
     }
-})
+    
+});
 
+
+app.post('/api/get-playlist-videos', async (req, res) => {
+    try {
+        const { playlistId } = req.body
+
+        const result = await getPlaylistVideos(playlistId)
+
+        console.log("BACK END PLIST VIDEO RESULTS: ", result)
+        res.json(result)
+
+    } catch (err: any) {
+        console.log("BACK END GET PLIST INFO ERROR");
+        console.error("Error: ", err)
+    }
+    
+});
 
 app.get('/api/download/:filename', (req, res) => {
     const { filename } = req.params;

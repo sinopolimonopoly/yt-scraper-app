@@ -1,4 +1,4 @@
-export async function getVideoIds(apiKey, playlistId) {
+export async function getPlaylistVideoIds(apiKey, playlistId) {
     let playlistVideoIds = [];
     let nextPageToken = null;
     while (true) {

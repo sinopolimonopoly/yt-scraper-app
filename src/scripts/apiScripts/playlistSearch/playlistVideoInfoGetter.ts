@@ -1,5 +1,5 @@
-import { createDefaultDict } from "../../helpers/defaultdict";
-import { processDuration } from "../../helpers/durationProcessor";
+import { createDefaultDict } from "../../helpers/defaultdict.js";
+import { processDuration } from "../../helpers/durationProcessor.js";
 
 interface PlaylistVideo {
     title: string;

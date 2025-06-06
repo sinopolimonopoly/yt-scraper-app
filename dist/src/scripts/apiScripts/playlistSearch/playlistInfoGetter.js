@@ -1,16 +1,16 @@
-export async function getPlaylistInfo(apiKey, playlistId) {
+export async function retrievePlaylistInfo(apiKey, playlistId) {
     const url = `https://www.googleapis.com/youtube/v3/playlists?part=snippet,contentDetails&id=${playlistId}&key=${apiKey}`;
     const res = await fetch(url);
     const data = await res.json();
     if (data.pageInfo.totalResults == 0) {
         return {
-            info: null,
+            results: null,
             error: false,
             errorMessage: ""
         };
     }
     return {
-        info: {
+        results: {
             title: data.items[0].snippet.title,
             description: data.items[0].snippet.description,
             createDate: data.items[0].snippet.publishedAt.slice(0, 10),

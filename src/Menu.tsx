@@ -68,7 +68,7 @@ export default function Menu() {
         setOpenConfirm(false);
     }
 
-    const handleClick = async (handle: string, selectedTypes: UploadType[]) => {
+    const handleChannelClick = async (handle: string, selectedTypes: UploadType[]) => {
         setLoading(true);    
         // Fetch api results
         const chanInfo = await callGetChannelInfoScript(handle);
@@ -129,7 +129,7 @@ export default function Menu() {
     const callGetVideosScript = async(channelHandle: string, uploadTypes: UploadType[]) => {
         try {
             console.log(baseUrl,"ashdahsddhs");
-            const res = await fetch(`${baseUrl}/api/get-videos`, {
+            const res = await fetch(`${baseUrl}/api/get-channel-videos`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -327,7 +327,7 @@ export default function Menu() {
                                 <Button onClick={() => setOpenConfirm(false)} color="error">
                                     Cancel
                                 </Button>
-                                <Button onClick={() => handleClick(input.trim(), getSelectedTypes())} color="primary">
+                                <Button onClick={() => handleChannelClick(input.trim(), getSelectedTypes())} color="primary">
                                     Fetch Uploads
                                 </Button>
                             </>
