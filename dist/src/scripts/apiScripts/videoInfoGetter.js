@@ -1,7 +1,17 @@
 import { createDefaultDict } from "../helpers/defaultdict.js";
 import { processDuration } from "../helpers/durationProcessor.js";
 export async function getVideoInfo(apiKey, videoIds) {
-    let videos = createDefaultDict(() => ({}));
+    let videos = createDefaultDict(() => ({
+        Title: "",
+        UploadDate: "",
+        NumericDate: 0,
+        UploadType: "",
+        Duration: "",
+        DurationInS: 0,
+        ViewCount: 0,
+        LikeCount: 0,
+        CommentCount: 0,
+    }));
     for (const [vidType, idList] of Object.entries(videoIds)) {
         for (let i = 0; i < idList.length; i += 50) {
             let batch = idList.slice(i, i + 50);
@@ -53,19 +63,19 @@ export async function getVideoInfo(apiKey, videoIds) {
                         commentCount = "Disabled";
                     }
                     // Assigning data to current video ID object
-                    videos[videoId]["Title"] = title;
-                    videos[videoId]["UploadDate"] = uploadDate;
-                    videos[videoId]["NumericDate"] = Number(uploadDate.replaceAll("-", ""));
+                    videos[videoId].Title = title;
+                    videos[videoId].UploadDate = uploadDate;
+                    videos[videoId].NumericDate = Number(uploadDate.replaceAll("-", ""));
                     let videoType = (vidType == "videos" ? "Long Form" :
                         vidType == "shorts" ? "Short" :
                             vidType == "livestreams" ? "Livestream" :
                                 null);
-                    videos[videoId]["VideoType"] = videoType;
-                    videos[videoId]["Duration"] = rawDuration;
-                    videos[videoId]["DurationInS"] = processedDuration;
-                    videos[videoId]["ViewCount"] = viewCount;
-                    videos[videoId]["LikeCount"] = likeCount;
-                    videos[videoId]["CommentCount"] = commentCount;
+                    videos[videoId].VideoType = videoType;
+                    videos[videoId].Duration = rawDuration;
+                    videos[videoId].DurationInS = processedDuration;
+                    videos[videoId].ViewCount = viewCount;
+                    videos[videoId].LikeCount = likeCount;
+                    videos[videoId].CommentCount = commentCount;
                 }
                 catch (error) {
                     console.log("---------- Video Info Error -----------");

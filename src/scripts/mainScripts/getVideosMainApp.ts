@@ -33,7 +33,7 @@ async function getVideos(handle: string, uploadTypes: UploadType[]) {
 
     const videos = await getVideoInfo(apiKey, videoIds);
 
-    if (Number(Object.keys(videos).length) > 0) {
+    if (videos && Number(Object.keys(videos).length) > 0) {
         const sortedEntries = Object.entries(videos).sort(([, a], [, b]) => b.NumericDate - a.NumericDate)
 
         const sortedVideos = Object.fromEntries(sortedEntries)

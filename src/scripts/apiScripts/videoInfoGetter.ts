@@ -1,16 +1,27 @@
 import { createDefaultDict } from "../helpers/defaultdict.js";
 import { processDuration } from "../helpers/durationProcessor.js";
 
-export async function getVideoInfo(
-    apiKey: string,
+import { VideoInterface } from "../helpers/interfaces.js";
+
+export async function getVideoInfo(apiKey: string,
     videoIds : {
         videos?: string[];
         shorts?: string[];
         livestreams?: string[];
     }
-): Promise<Record<string, any>> {
+): Promise<Record<string,VideoInterface> | null> {
 
-    let videos = createDefaultDict<Record<string, any>>(() => ({}));
+    let videos = createDefaultDict<VideoInterface>(() => ({
+        Title: "",
+        UploadDate: "",
+        NumericDate: 0,
+        UploadType: "",
+        Duration: "",
+        DurationInS: 0,
+        ViewCount: 0,
+        LikeCount: 0,
+        CommentCount: 0,
+    }));
 
     for (const[vidType, idList] of Object.entries(videoIds)) {
 
@@ -80,23 +91,23 @@ export async function getVideoInfo(
                     }
 
                     // Assigning data to current video ID object
-                    videos[videoId]["Title"] = title;
-                    videos[videoId]["UploadDate"] = uploadDate;
-                    videos[videoId]["NumericDate"] = Number(uploadDate.replaceAll("-", ""));
+                    videos[videoId].Title = title;
+                    videos[videoId].UploadDate = uploadDate;
+                    videos[videoId].NumericDate = Number(uploadDate.replaceAll("-", ""));
                     let videoType = (
                         vidType == "videos" ? "Long Form" :
                         vidType == "shorts" ? "Short" :
                         vidType == "livestreams" ? "Livestream" :
                         null
                     ) ;
-                    videos[videoId]["VideoType"] = videoType;
+                    videos[videoId].VideoType = videoType;
 
-                    videos[videoId]["Duration"] = rawDuration;
-                    videos[videoId]["DurationInS"] = processedDuration;
+                    videos[videoId].Duration = rawDuration;
+                    videos[videoId].DurationInS = processedDuration;
 
-                    videos[videoId]["ViewCount"] = viewCount;
-                    videos[videoId]["LikeCount"] = likeCount;
-                    videos[videoId]["CommentCount"] = commentCount;
+                    videos[videoId].ViewCount = viewCount;
+                    videos[videoId].LikeCount = likeCount;
+                    videos[videoId].CommentCount = commentCount;
                 }
 
                 catch (error) {

@@ -31,9 +31,17 @@ async function getPlaylistVideos(playlistId: string, channel: string): Promise<P
         }
     }
 
-    else {
-        createVideoCsv(playlistVideos.result, channel.split(" "), false);
+    else if (playlistVideos.result) {
+        createVideoCsv(playlistVideos.result, channel.split(" ").join("_"), false);
         return playlistVideos
+    }
+
+    else {
+        return {
+            result: null,
+            error: true,
+            errorMessage: "No idea how we got here I'll be real"
+        }
     }
 }
 

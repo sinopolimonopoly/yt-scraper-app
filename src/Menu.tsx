@@ -135,7 +135,7 @@ export default function Menu() {
         setInfoErrMsg(pListInfo.errorMessage);
 
         if (pListInfo.error == false) {
-            const pListVidList = await callGetPlistVideoScript(playlistId);
+            const pListVidList = await callGetPlistVideoScript(playlistId, pListInfo.result.channel);
 
             setChanVideoList(pListVidList.result)
             setIsVideoErr(pListVidList.error);
@@ -255,14 +255,14 @@ export default function Menu() {
         }
     }
 
-    const callGetPlistVideoScript = async(playlistId: string) => {
+    const callGetPlistVideoScript = async(playlistId: string, channel: string) => {
         try {
             const res = await fetch(`${baseUrl}/api/get-playlist-videos`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ playlistId })
+                body: JSON.stringify({ playlistId, channel })
             })
 
             const data = await res.json();

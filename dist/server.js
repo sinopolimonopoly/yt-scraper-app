@@ -53,8 +53,8 @@ app.post('/api/get-playlist-info', async (req, res) => {
 });
 app.post('/api/get-playlist-videos', async (req, res) => {
     try {
-        const { playlistId } = req.body;
-        const result = await getPlaylistVideos(playlistId);
+        const { playlistId, channel } = req.body;
+        const result = await getPlaylistVideos(playlistId, channel);
         console.log("BACK END PLIST VIDEO RESULTS: ", result);
         res.json(result);
     }

@@ -6,7 +6,7 @@ dotenv.config();
 const apiKey = process.env.API_KEY;
 if (!apiKey)
     throw new Error("Missing API_KEY in environment variables");
-async function getPlaylistVideos(playlistId) {
+async function getPlaylistVideos(playlistId, channel) {
     const playlistVidIds = await getPlaylistVideoIds(apiKey, playlistId);
     if (playlistVidIds.error == true) {
         return {
@@ -23,9 +23,16 @@ async function getPlaylistVideos(playlistId) {
             errorMessage: playlistVideos.errorMessage
         };
     }
-    else {
-        createVideoCsv(playlistVideos, playlistId, false);
+    else if (playlistVideos.result) {
+        createVideoCsv(playlistVideos.result, channel.split(" ").join("_"), false);
         return playlistVideos;
+    }
+    else {
+        return {
+            result: null,
+            error: true,
+            errorMessage: "No idea how we got here I'll be real"
+        };
     }
 }
 export default getPlaylistVideos;

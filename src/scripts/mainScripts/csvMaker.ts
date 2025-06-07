@@ -2,9 +2,11 @@ import * as fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+import { VideoInterface } from '../helpers/interfaces';
+
 const safeText = (text: any) => `"${String(text).replace(/"/g, '""')}"`;
 
-export function createVideoCsv(videos: Record<string, any>, input: string, isChannel: boolean) {
+export function createVideoCsv(videos: Record<string, VideoInterface>, input: string, isChannel: boolean) {
 
     let filePath
     let headers

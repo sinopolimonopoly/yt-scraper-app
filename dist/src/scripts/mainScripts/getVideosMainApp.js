@@ -22,7 +22,7 @@ async function getVideos(handle, uploadTypes) {
     const playlistIds = await getPlaylistId(channelId, uploadTypes);
     const videoIds = await getVideoIds(apiKey, playlistIds);
     const videos = await getVideoInfo(apiKey, videoIds);
-    if (Number(Object.keys(videos).length) > 0) {
+    if (videos && Number(Object.keys(videos).length) > 0) {
         const sortedEntries = Object.entries(videos).sort(([, a], [, b]) => b.NumericDate - a.NumericDate);
         const sortedVideos = Object.fromEntries(sortedEntries);
         createVideoCsv(sortedVideos, handle, true);

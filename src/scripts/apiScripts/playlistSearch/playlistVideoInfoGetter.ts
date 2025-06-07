@@ -1,27 +1,16 @@
 import { createDefaultDict } from "../../helpers/defaultdict.js";
 import { processDuration } from "../../helpers/durationProcessor.js";
 
-interface PlaylistVideo {
-    Title: string;
-    UploadDate: string;
-    NumericDate: number;
-    Duration: string;
-    DurationInS: number | string;
-    ViewCount: number | string;
-    LikeCount: number | string;
-    CommentCount: number | string;
-}
+import { VideoInterface } from "../../helpers/interfaces.js";
 
 export interface PlaylistVideoResults {
-    result: {
-        [key: string]: PlaylistVideo;
-    } | null;
+    result: Record<string, VideoInterface> | null;
     error: boolean;
     errorMessage: string;
 }
 
 export async function getPlaylistVideosInfo(apiKey: string, videoIds: Array<string>): Promise<PlaylistVideoResults> {
-    let videos = createDefaultDict<PlaylistVideo>(() => ({
+    let videos = createDefaultDict<VideoInterface>(() => ({
         Title: "",
         UploadDate: "",
         NumericDate: 0,
