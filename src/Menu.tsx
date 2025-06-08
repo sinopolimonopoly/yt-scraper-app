@@ -65,7 +65,7 @@ export default function Menu() {
                 console.log(channelInfo);
             }, [chanVideoList]);
 
-    const isFormValid = input.trim() !== "" && Object.values(selectedTypes).some(Boolean);
+    const isFormValid = input.trim() !== "" && (Object.values(selectedTypes).some(Boolean) || !isToggled);
 
     const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIsToggled(event.target.checked)
