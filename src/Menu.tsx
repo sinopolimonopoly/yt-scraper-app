@@ -27,6 +27,7 @@ export default function Menu() {
     });
 
     const [isToggled, setIsToggled] = useState(true);
+    const [recentSearch, setRecentSearch] = useState("");
 
     const [chanVideoList, setChanVideoList] = useState<any[]>([]);
 
@@ -63,6 +64,8 @@ export default function Menu() {
                 console.log(chanVideoList.length);
                 console.log(Array.isArray(chanVideoList));
                 console.log(channelInfo);
+                console.log(channelInfo.thumbnail);
+                console.log(playlistInfo.thumbnail);
             }, [chanVideoList]);
 
     const isFormValid = input.trim() !== "" && (Object.values(selectedTypes).some(Boolean) || !isToggled);
@@ -104,6 +107,8 @@ export default function Menu() {
             setChanVideoList(vidList.result);
             setIsVideoErr(vidList.error);
             setvideoErrMsg(vidList.errorMessage);
+
+            setRecentSearch("channel");
         }
 
         else if (chanInfo.error == true) {
@@ -140,6 +145,8 @@ export default function Menu() {
             setChanVideoList(pListVidList.result)
             setIsVideoErr(pListVidList.error);
             setvideoErrMsg(pListVidList.errorMessage);
+
+            setRecentSearch("playlist");
         }
 
         else if (pListInfo.error == true) {
@@ -435,8 +442,7 @@ export default function Menu() {
                                 <Button onClick={() => setOpenConfirm(false)} color="error">
                                     Cancel
                                 </Button>
-                                <Button onClick={() => 
-                                    isToggled 
+                                <Button onClick={() => isToggled 
                                     ? handleChannelClick(input.trim(), getSelectedTypes())
                                     : handlePlaylistClick(input.trim())
                                 } color="primary">
@@ -509,7 +515,9 @@ export default function Menu() {
                             <Box display="flex" justifyContent="flex-end">
                                 <Box
                                     component="img"
-                                    src={isToggled ? channelInfo.thumbnail : playlistInfo.thumbnail}
+                                    
+                                    src={recentSearch == "channel" ? channelInfo.thumbnail.replace("=s88", "=s188") : playlistInfo.thumbnail}
+                                    sx={{ width: 150, height: 150, borderRadius:"50%"}}
                                 />
                             </Box>
                             
@@ -517,16 +525,16 @@ export default function Menu() {
 
                         <Grid size={4}>
                             <Typography variant='h5' mt={2} sx={{ fontWeight:'bold'}}>
-                                {isToggled ? channelInfo.channel : playlistInfo.title}
+                                {recentSearch == "channel" ? channelInfo.channel : playlistInfo.title}
                             </Typography>
                             <Typography variant='h6'>
-                                {isToggled ? channelInfo.handle : `by ${playlistInfo.channel}`}
+                                {recentSearch == "channel" ? channelInfo.handle : `by ${playlistInfo.channel}`}
                             </Typography>
                             <Typography variant='h6' mt={1}>
-                                {isToggled ? `${channelInfo.subscribers.toLocaleString()} subscribers` : `${playlistInfo.videoCount} videos`}
+                                {recentSearch == "channel" ? `${channelInfo.subscribers.toLocaleString()} subscribers` : `${playlistInfo.videoCount} videos`}
                             </Typography>
                             
-                            {isToggled ? 
+                            {recentSearch == "channel" ? 
                             <> </> : (
                                 <Typography variant='h6'>
                                     {`Created ${playlistInfo.createDate}`}
@@ -552,7 +560,7 @@ export default function Menu() {
                                     <TableCell>Video ID</TableCell>
                                     <TableCell>Title</TableCell>
                                     <TableCell>Upload Date</TableCell>
-                                    {isToggled ? <TableCell>Video Type</TableCell> : <></>}
+                                    {recentSearch == "channel" ? <TableCell>Video Type</TableCell> : <></>}
                                     <TableCell>Duration</TableCell>
                                     <TableCell>Duration in S</TableCell>
                                     <TableCell>View Count</TableCell>
@@ -584,7 +592,7 @@ export default function Menu() {
 
                 {(chanVideoList.length > 0) ? (
                     <Grid size={12} container justifyContent="center" mt={2}>
-                        <Button variant="contained" color="primary" onClick={() => downloadCSV(isToggled ? `${input}_output.csv`: `${playlistInfo.channel.split(" ").join("_")}_playlist.csv`)}>
+                        <Button variant="contained" color="primary" onClick={() => downloadCSV(recentSearch == "channel" ? `${input}_output.csv`: `${playlistInfo.channel.split(" ").join("_")}_playlist.csv`)}>
                             Download Output
                         </Button>
                     </Grid>
