@@ -515,9 +515,8 @@ export default function Menu() {
                             <Box display="flex" justifyContent="flex-end">
                                 <Box
                                     component="img"
-                                    
-                                    src={recentSearch == "channel" ? channelInfo.thumbnail.replace("=s88", "=s188") : playlistInfo.thumbnail}
-                                    sx={{ width: 150, height: 150, borderRadius:"50%"}}
+                                    src={recentSearch == "channel" ? channelInfo.thumbnail : playlistInfo.thumbnail}    
+                                    sx={recentSearch == "channel" ? { width: 150, height: 150, borderRadius:"50%"} : {}}
                                 />
                             </Box>
                             
@@ -527,9 +526,30 @@ export default function Menu() {
                             <Typography variant='h5' mt={2} sx={{ fontWeight:'bold'}}>
                                 {recentSearch == "channel" ? channelInfo.channel : playlistInfo.title}
                             </Typography>
-                            <Typography variant='h6'>
-                                {recentSearch == "channel" ? channelInfo.handle : `by ${playlistInfo.channel}`}
-                            </Typography>
+                            {recentSearch == "channel" ? 
+                            <>
+                                <Typography
+                                    variant='h6'
+                                    component="a"
+                                    href={`https://www.youtube.com/${channelInfo.handle}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    sx={{
+                                        color: 'primary.main',
+                                        textDecoration: 'none',
+                                        '&:hover': { textDecoration: 'underline' }
+                                    }}
+                                >
+                                    {`youtube.com/${channelInfo.handle}`}
+                                </Typography> 
+                            </> : (
+                            <>
+                                <Typography variant='h6'>
+                                    by {playlistInfo.channel}
+                                </Typography>
+                            </>
+                            )}
+                            
                             <Typography variant='h6' mt={1}>
                                 {recentSearch == "channel" ? `${channelInfo.subscribers.toLocaleString()} subscribers` : `${playlistInfo.videoCount} videos`}
                             </Typography>
@@ -578,10 +598,10 @@ export default function Menu() {
                                             <TableCell>{video.UploadDate}</TableCell>
                                             {isToggled ? <TableCell>{video.VideoType}</TableCell> : <></>}
                                             <TableCell>{video.Duration}</TableCell>
-                                            <TableCell>{video.DurationInS}</TableCell>
-                                            <TableCell>{video.ViewCount}</TableCell>
-                                            <TableCell>{video.LikeCount}</TableCell>
-                                            <TableCell>{video.CommentCount}</TableCell>
+                                            <TableCell>{video.DurationInS.toLocaleString()}</TableCell>
+                                            <TableCell>{video.ViewCount.toLocaleString()}</TableCell>
+                                            <TableCell>{video.LikeCount.toLocaleString()}</TableCell>
+                                            <TableCell>{video.CommentCount.toLocaleString()}</TableCell>
                                         </TableRow>
                                     )
                                 })}
