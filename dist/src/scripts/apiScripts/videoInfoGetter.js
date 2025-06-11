@@ -12,7 +12,14 @@ export async function getVideoInfo(apiKey, videoIds) {
         LikeCount: 0,
         CommentCount: 0,
     }));
+    let typeCounts = {
+        LongForms: 0,
+        Shorts: 0,
+        Livestreams: 0
+    };
+    typeCounts.LongForms = 0;
     for (const [vidType, idList] of Object.entries(videoIds)) {
+        let currentTypeCount = 0;
         for (let i = 0; i < idList.length; i += 50) {
             let batch = idList.slice(i, i + 50);
             let commaSepIds = batch.join(",");
@@ -76,6 +83,7 @@ export async function getVideoInfo(apiKey, videoIds) {
                     videos[videoId].ViewCount = viewCount;
                     videos[videoId].LikeCount = likeCount;
                     videos[videoId].CommentCount = commentCount;
+                    currentTypeCount += 1;
                 }
                 catch (error) {
                     console.log("---------- Video Info Error -----------");
@@ -84,6 +92,18 @@ export async function getVideoInfo(apiKey, videoIds) {
                 }
             }
         }
+        if (vidType == "videos") {
+            typeCounts.LongForms = currentTypeCount;
+        }
+        else if (vidType == "shorts") {
+            typeCounts.Shorts = currentTypeCount;
+        }
+        else if (vidType == "livestreams") {
+            typeCounts.Livestreams = currentTypeCount;
+        }
     }
-    return videos;
+    return {
+        videoResults: videos,
+        vidCounts: typeCounts
+    };
 }

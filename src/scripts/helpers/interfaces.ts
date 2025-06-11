@@ -9,3 +9,9 @@ export interface VideoInterface {
     LikeCount: number | string;
     CommentCount: number | string;
 }
+
+export interface VidCountInterface {
+    LongForms?: number;
+    Shorts?: number;
+    Livestreams?: number;
+}

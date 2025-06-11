@@ -30,6 +30,11 @@ export default function Menu() {
     const [recentSearch, setRecentSearch] = useState("");
 
     const [chanVideoList, setChanVideoList] = useState<any[]>([]);
+    const [chanVideoCounts, setChanVideoCounts] = useState({
+        longForms: 0,
+        shorts: 0,
+        livestreams: 0
+    })
 
     const [channelInfo, setChannelInfo] = useState({
         channel: "",
@@ -105,6 +110,11 @@ export default function Menu() {
 
             // Set video list states
             setChanVideoList(vidList.result);
+            setChanVideoCounts({
+                longForms: 1,
+                shorts: 2,
+                livestreams: 3
+            })
             setIsVideoErr(vidList.error);
             setvideoErrMsg(vidList.errorMessage);
 

@@ -24,11 +24,8 @@ app.post('/api/get-channel-info', async (req, res) => {
 
         const result = await getChannelInfo(channelHandle);
 
-        console.log("before res jsoning", result)
-
         res.json(result);
-
-        console.log("server ts output", result)
+        
     } catch (err: any) {
         console.log("BACK END GET CHANNEL INFO ERROR");
         console.error("Error: ", err)
@@ -45,6 +42,7 @@ app.post('/api/get-channel-videos', async (req, res) => {
         console.log("Specified upload types:", uploadTypes);
 
         const result = await getVideos(channelHandle, uploadTypes);
+        console.log(result);
 
         res.json(result);
         

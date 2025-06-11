@@ -2,6 +2,12 @@ import { createDefaultDict } from "../helpers/defaultdict.js";
 import { processDuration } from "../helpers/durationProcessor.js";
 
 import { VideoInterface } from "../helpers/interfaces.js";
+import { VidCountInterface } from "../helpers/interfaces.js";
+
+interface ChannelVidReturn {
+    videoResults: Record<string, VideoInterface>;
+    vidCounts: VidCountInterface;
+}
 
 export async function getVideoInfo(apiKey: string,
     videoIds : {
@@ -9,7 +15,7 @@ export async function getVideoInfo(apiKey: string,
         shorts?: string[];
         livestreams?: string[];
     }
-): Promise<Record<string,VideoInterface> | null> {
+): Promise<ChannelVidReturn | null> {
 
     let videos = createDefaultDict<VideoInterface>(() => ({
         Title: "",
@@ -23,7 +29,16 @@ export async function getVideoInfo(apiKey: string,
         CommentCount: 0,
     }));
 
-    for (const[vidType, idList] of Object.entries(videoIds)) {
+    let typeCounts: VidCountInterface = {
+        LongForms: 0,
+        Shorts: 0,
+        Livestreams: 0
+    }
+
+    typeCounts.LongForms = 0
+
+    for (const[vidType, idList] of Object.entries(videoIds)) { 
+        let currentTypeCount = 0
 
         for (let i = 0; i < idList.length; i += 50) {
 
@@ -108,6 +123,8 @@ export async function getVideoInfo(apiKey: string,
                     videos[videoId].ViewCount = viewCount;
                     videos[videoId].LikeCount = likeCount;
                     videos[videoId].CommentCount = commentCount;
+
+                    currentTypeCount += 1
                 }
 
                 catch (error) {
@@ -117,7 +134,23 @@ export async function getVideoInfo(apiKey: string,
                 }
             }
         }
+
+        if (vidType == "videos") {
+            typeCounts.LongForms = currentTypeCount  
+        }
+
+        else if (vidType == "shorts") {
+            typeCounts.Shorts = currentTypeCount  
+        }
+
+        else if (vidType == "livestreams") {
+            typeCounts.Livestreams = currentTypeCount  
+        }
+
     }
 
-    return videos
+    return {
+        videoResults: videos,
+        vidCounts: typeCounts
+    }
 }

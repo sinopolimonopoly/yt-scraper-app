@@ -33,14 +33,17 @@ async function getVideos(handle: string, uploadTypes: UploadType[]) {
 
     const videos = await getVideoInfo(apiKey, videoIds);
 
-    if (videos && Number(Object.keys(videos).length) > 0) {
-        const sortedEntries = Object.entries(videos).sort(([, a], [, b]) => b.NumericDate - a.NumericDate)
+    console.log(videos)
+
+    if (videos?.videoResults && Number(Object.keys(videos.videoResults).length) > 0) {
+        const sortedEntries = Object.entries(videos.videoResults).sort(([, a], [, b]) => b.NumericDate - a.NumericDate)
 
         const sortedVideos = Object.fromEntries(sortedEntries)
         createVideoCsv(sortedVideos, handle, true);
 
         return {
             result: sortedVideos,
+            resultCounts: videos.vidCounts,
             error: false,
             errorMessage: ""}
     }
