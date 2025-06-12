@@ -25,6 +25,11 @@ export default function Menu() {
         short: false,
         live: false
     });
+    const [searchedTypes, setSearchedTypes] = useState({
+        longForm: false,
+        short: false,
+        livestream: false
+    })
 
     const [isToggled, setIsToggled] = useState(true);
     const [recentSearch, setRecentSearch] = useState("");
@@ -70,7 +75,8 @@ export default function Menu() {
                 console.log(Array.isArray(chanVideoList));
                 console.log(channelInfo);
                 console.log(channelInfo.thumbnail);
-                console.log(playlistInfo.thumbnail);
+                console.log(playlistInfo.thumbnail);    
+                console.log(chanVideoCounts);
             }, [chanVideoList]);
 
     const isFormValid = input.trim() !== "" && (Object.values(selectedTypes).some(Boolean) || !isToggled);
@@ -111,9 +117,9 @@ export default function Menu() {
             // Set video list states
             setChanVideoList(vidList.result);
             setChanVideoCounts({
-                longForms: 1,
-                shorts: 2,
-                livestreams: 3
+                longForms: vidList.videoCounts.LongForms,
+                shorts: vidList.videoCounts.Shorts,
+                livestreams: vidList.videoCounts.Livestreams
             })
             setIsVideoErr(vidList.error);
             setvideoErrMsg(vidList.errorMessage);
@@ -204,7 +210,14 @@ export default function Menu() {
 
             const data = await res.json();
 
-            return processGetVideos(data);
+            let videoItems = processGetVideos(data.result);
+
+            return {
+                result: videoItems,
+                videoCounts: data.resultCounts,
+                error: data.error,
+                errorMessage: data.errorMessage
+            }
 
             
         } catch (err: any) {
@@ -218,37 +231,17 @@ export default function Menu() {
         }
     }
 
-    const processGetVideos = (
-        vidResults: {
-            result: Record<string, any>,
-            error: Boolean,
-            errorMessage: string,
-        }
-    ) => {
-
-        if (vidResults.error == false) {
-            const vidIds = Object.keys(vidResults.result);
-            const vidData = Object.values(vidResults.result);
+    const processGetVideos = (result: Record<string, any>) => {
+            const vidIds = Object.keys(result);
+            const vidData = Object.values(result);
 
             const endResults = vidIds.map((VideoId, index) => ({
                 VideoId, ...(vidData[index] as Record<string, any>)
             }));
 
-            return {
-                result: endResults,
-                error: false,
-                errorMessage: ""
-            }
+            return endResults;
+
         }
- 
-        else { // If vidResults.error == true
-            return {
-                result: [],
-                error: true,
-                errorMessage: vidResults.errorMessage
-            }
-        }
-    }
 
     const callGetChanInfoScript = async(channelHandle: string) => {
         try {
@@ -284,7 +277,13 @@ export default function Menu() {
 
             const data = await res.json();
 
-            return processGetVideos(data);
+            let playlistVideos = processGetVideos(data.result);
+
+            return {
+                result: playlistVideos,
+                error: data.error,
+                errorMessage: data.errorMessage
+            }
 
         } catch (err: any) {
             console.log("FRONT END GET CHANNEL VIDEOS ERROR");
@@ -326,6 +325,7 @@ export default function Menu() {
         link.click();
         link.remove();
     }
+
 
 
     return (
@@ -532,7 +532,7 @@ export default function Menu() {
                             
                         </Grid>
 
-                        <Grid size={4}>
+                        <Grid size={3}>
                             <Typography variant='h5' mt={2} sx={{ fontWeight:'bold'}}>
                                 {recentSearch == "channel" ? channelInfo.channel : playlistInfo.title}
                             </Typography>
@@ -570,6 +570,16 @@ export default function Menu() {
                                     {`Created ${playlistInfo.createDate}`}
                                 </Typography>
                             )}
+                        </Grid>
+
+                        <Grid size ={2}>
+                            <Typography variant='h6'>
+                                {chanVideoCounts.longForms} Long Form
+                                <br />
+                                {chanVideoCounts.shorts} Shorts
+                                <br />
+                                {chanVideoCounts.livestreams} Livestreams
+                            </Typography>
                         </Grid>
 
                     </Grid>

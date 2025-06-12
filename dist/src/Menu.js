@@ -23,6 +23,11 @@ export default function Menu() {
     const [isToggled, setIsToggled] = useState(true);
     const [recentSearch, setRecentSearch] = useState("");
     const [chanVideoList, setChanVideoList] = useState([]);
+    const [chanVideoCounts, setChanVideoCounts] = useState({
+        longForms: 0,
+        shorts: 0,
+        livestreams: 0
+    });
     const [channelInfo, setChannelInfo] = useState({
         channel: "",
         handle: "",
@@ -51,6 +56,7 @@ export default function Menu() {
         console.log(channelInfo);
         console.log(channelInfo.thumbnail);
         console.log(playlistInfo.thumbnail);
+        console.log(chanVideoCounts);
     }, [chanVideoList]);
     const isFormValid = input.trim() !== "" && (Object.values(selectedTypes).some(Boolean) || !isToggled);
     const handleSwitchChange = (event) => {
@@ -81,6 +87,11 @@ export default function Menu() {
             const vidList = await callGetChanVideosScript(handle, selectedTypes);
             // Set video list states
             setChanVideoList(vidList.result);
+            setChanVideoCounts({
+                longForms: vidList.videoCounts.LongForms,
+                shorts: vidList.videoCounts.Shorts,
+                livestreams: vidList.videoCounts.Livestreams
+            });
             setIsVideoErr(vidList.error);
             setvideoErrMsg(vidList.errorMessage);
             setRecentSearch("channel");
@@ -151,7 +162,13 @@ export default function Menu() {
                 body: JSON.stringify({ channelHandle, uploadTypes }),
             });
             const data = await res.json();
-            return processGetVideos(data);
+            let videoItems = processGetVideos(data.result);
+            return {
+                result: videoItems,
+                videoCounts: data.resultCounts,
+                error: data.error,
+                errorMessage: data.errorMessage
+            };
         }
         catch (err) {
             console.log("FRONT END GET CHANNEL VIDEOS ERROR");
@@ -163,26 +180,13 @@ export default function Menu() {
             };
         }
     };
-    const processGetVideos = (vidResults) => {
-        if (vidResults.error == false) {
-            const vidIds = Object.keys(vidResults.result);
-            const vidData = Object.values(vidResults.result);
-            const endResults = vidIds.map((VideoId, index) => ({
-                VideoId, ...vidData[index]
-            }));
-            return {
-                result: endResults,
-                error: false,
-                errorMessage: ""
-            };
-        }
-        else { // If vidResults.error == true
-            return {
-                result: [],
-                error: true,
-                errorMessage: vidResults.errorMessage
-            };
-        }
+    const processGetVideos = (result) => {
+        const vidIds = Object.keys(result);
+        const vidData = Object.values(result);
+        const endResults = vidIds.map((VideoId, index) => ({
+            VideoId, ...vidData[index]
+        }));
+        return endResults;
     };
     const callGetChanInfoScript = async (channelHandle) => {
         try {
@@ -212,7 +216,12 @@ export default function Menu() {
                 body: JSON.stringify({ playlistId, channel })
             });
             const data = await res.json();
-            return processGetVideos(data);
+            let playlistVideos = processGetVideos(data.result);
+            return {
+                result: playlistVideos,
+                error: data.error,
+                errorMessage: data.errorMessage
+            };
         }
         catch (err) {
             console.log("FRONT END GET CHANNEL VIDEOS ERROR");

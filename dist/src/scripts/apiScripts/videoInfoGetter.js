@@ -5,7 +5,7 @@ export async function getVideoInfo(apiKey, videoIds) {
         Title: "",
         UploadDate: "",
         NumericDate: 0,
-        UploadType: "",
+        VideoType: "",
         Duration: "",
         DurationInS: 0,
         ViewCount: 0,
