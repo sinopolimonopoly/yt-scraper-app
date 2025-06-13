@@ -14,7 +14,6 @@ import '@fontsource/roboto';
 import { UploadType } from './scripts/apiScripts/playlistIdGetter';
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
-console.log(baseUrl, "top of menu")
 
 export default function Menu() {
 
@@ -85,6 +84,14 @@ export default function Menu() {
         setIsToggled(event.target.checked)
     }
 
+    const selectedToSearched = (selected: any) => {
+        setSearchedTypes({
+            longForm: selected.long,
+            short: selected.short,
+            livestream: selected.live
+        })
+    }
+ 
     const handleClickOpen = () => {
         setOpenConfirm(true);
         setIsInfoErr(false);
@@ -95,8 +102,11 @@ export default function Menu() {
         setOpenConfirm(false);
     }
 
-    const handleChannelClick = async (handle: string, selectedTypes: UploadType[]) => {
+    const handleChannelClick = async (handle: string, currentSelectedTypes: UploadType[]) => {
         setLoading(true);    
+        
+        selectedToSearched(selectedTypes);
+        
         // Fetch api results
         const chanInfo = await callGetChanInfoScript(handle);
 
@@ -112,7 +122,7 @@ export default function Menu() {
 
         if (chanInfo.error == false) { 
 
-            const vidList = await callGetChanVideosScript(handle, selectedTypes);
+            const vidList = await callGetChanVideosScript(handle, currentSelectedTypes);
 
             // Set video list states
             setChanVideoList(vidList.result);
@@ -572,15 +582,23 @@ export default function Menu() {
                             )}
                         </Grid>
 
+                        {recentSearch == "channel" ? 
                         <Grid size ={2}>
                             <Typography variant='h6'>
-                                {chanVideoCounts.longForms} Long Form
+                                {Object.values(chanVideoCounts).reduce((sum, val) => sum + val, 0)} Videos retrieved
+                                <Divider />
+                                {searchedTypes.longForm ? `${chanVideoCounts.longForms} Long Form` : ``} 
                                 <br />
-                                {chanVideoCounts.shorts} Shorts
+                                {searchedTypes.short ? `${chanVideoCounts.shorts} Shorts` : ``}
                                 <br />
-                                {chanVideoCounts.livestreams} Livestreams
+                                {searchedTypes.livestream ? `${chanVideoCounts.livestreams} Livestreams` : ``}
                             </Typography>
                         </Grid>
+                            :
+                        <></>
+                        }
+
+                        
 
                     </Grid>
                         
