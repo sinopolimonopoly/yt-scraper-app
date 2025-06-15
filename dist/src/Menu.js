@@ -11,7 +11,6 @@ import { CircularProgress } from '@mui/material';
 import { Switch } from '@mui/material';
 import '@fontsource/roboto';
 const baseUrl = import.meta.env.VITE_BASE_URL;
-console.log(baseUrl, "top of menu");
 export default function Menu() {
     const [openConfirm, setOpenConfirm] = useState(false);
     const [input, setInput] = useState("");
@@ -82,7 +81,7 @@ export default function Menu() {
     const handleClose = () => {
         setOpenConfirm(false);
     };
-    const handleChannelClick = async (handle, selectedTypes) => {
+    const handleChannelClick = async (handle, currentSelectedTypes) => {
         setLoading(true);
         selectedToSearched(selectedTypes);
         // Fetch api results
@@ -97,7 +96,7 @@ export default function Menu() {
         setIsInfoErr(chanInfo.error);
         setInfoErrMsg(chanInfo.errorMessage);
         if (chanInfo.error == false) {
-            const vidList = await callGetChanVideosScript(handle, selectedTypes);
+            const vidList = await callGetChanVideosScript(handle, currentSelectedTypes);
             // Set video list states
             setChanVideoList(vidList.result);
             setChanVideoCounts({
@@ -293,7 +292,10 @@ export default function Menu() {
                                             textDecoration: 'none',
                                             '&:hover': { textDecoration: 'underline' }
                                         }, children: `youtube.com/${channelInfo.handle}` }) }) : (_jsx(_Fragment, { children: _jsxs(Typography, { variant: 'h6', children: ["by ", playlistInfo.channel] }) })), _jsx(Typography, { variant: 'h6', mt: 1, children: recentSearch == "channel" ? `${channelInfo.subscribers.toLocaleString()} subscribers` : `${playlistInfo.videoCount} videos` }), recentSearch == "channel" ?
-                                _jsx(_Fragment, { children: " " }) : (_jsx(Typography, { variant: 'h6', children: `Created ${playlistInfo.createDate}` }))] }), _jsx(Grid, { size: 2, children: _jsxs(Typography, { variant: 'h6', children: [Object.values(chanVideoCounts).reduce((sum, val) => sum + val, 0), " Videos retrieved", _jsx(Divider, {}), searchedTypes.longForm ? `${chanVideoCounts.longForms} Long Form` : ``, _jsx("br", {}), searchedTypes.short ? `${chanVideoCounts.shorts} Shorts` : ``, _jsx("br", {}), searchedTypes.livestream ? `${chanVideoCounts.livestreams} Livestreams` : ``] }) })] })) : (_jsx(_Fragment, {})), _jsxs(Grid, { container: true, spacing: 3, children: [Array.isArray(chanVideoList) && chanVideoList.length > 0 && (_jsx(Grid, { size: 12, container: true, justifyContent: "center", mt: 2, children: _jsxs(Table, { children: [_jsx(TableHead, { children: _jsxs(TableRow, { children: [_jsx(TableCell, { children: "Video ID" }), _jsx(TableCell, { children: "Title" }), _jsx(TableCell, { children: "Upload Date" }), recentSearch == "channel" ? _jsx(TableCell, { children: "Video Type" }) : _jsx(_Fragment, {}), _jsx(TableCell, { children: "Duration" }), _jsx(TableCell, { children: "Duration in S" }), _jsx(TableCell, { children: "View Count" }), _jsx(TableCell, { children: "Like Count" }), _jsx(TableCell, { children: "Comment Count" })] }) }), _jsx(TableBody, { children: chanVideoList.slice(0, 10).map((video, index) => {
+                                _jsx(_Fragment, { children: " " }) : (_jsx(Typography, { variant: 'h6', children: `Created ${playlistInfo.createDate}` }))] }), recentSearch == "channel" ?
+                        _jsx(Grid, { size: 2, children: _jsxs(Typography, { variant: 'h6', children: [Object.values(chanVideoCounts).reduce((sum, val) => sum + val, 0), " Videos retrieved", _jsx(Divider, {}), searchedTypes.longForm ? `${chanVideoCounts.longForms} Long Form` : ``, _jsx("br", {}), searchedTypes.short ? `${chanVideoCounts.shorts} Shorts` : ``, _jsx("br", {}), searchedTypes.livestream ? `${chanVideoCounts.livestreams} Livestreams` : ``] }) })
+                        :
+                            _jsx(_Fragment, {})] })) : (_jsx(_Fragment, {})), _jsxs(Grid, { container: true, spacing: 3, children: [Array.isArray(chanVideoList) && chanVideoList.length > 0 && (_jsx(Grid, { size: 12, container: true, justifyContent: "center", mt: 2, children: _jsxs(Table, { children: [_jsx(TableHead, { children: _jsxs(TableRow, { children: [_jsx(TableCell, { children: "Video ID" }), _jsx(TableCell, { children: "Title" }), _jsx(TableCell, { children: "Upload Date" }), recentSearch == "channel" ? _jsx(TableCell, { children: "Video Type" }) : _jsx(_Fragment, {}), _jsx(TableCell, { children: "Duration" }), _jsx(TableCell, { children: "Duration in S" }), _jsx(TableCell, { children: "View Count" }), _jsx(TableCell, { children: "Like Count" }), _jsx(TableCell, { children: "Comment Count" })] }) }), _jsx(TableBody, { children: chanVideoList.slice(0, 10).map((video, index) => {
                                         return (_jsxs(TableRow, { children: [_jsx(TableCell, { children: video.VideoId }), _jsx(TableCell, { children: video.Title }), _jsx(TableCell, { children: video.UploadDate }), isToggled ? _jsx(TableCell, { children: video.VideoType }) : _jsx(_Fragment, {}), _jsx(TableCell, { children: video.Duration }), _jsx(TableCell, { children: video.DurationInS.toLocaleString() }), _jsx(TableCell, { children: video.ViewCount.toLocaleString() }), _jsx(TableCell, { children: video.LikeCount.toLocaleString() }), _jsx(TableCell, { children: video.CommentCount.toLocaleString() })] }));
                                     }) })] }) })), (chanVideoList.length > 0) ? (_jsx(Grid, { size: 12, container: true, justifyContent: "center", mt: 2, children: _jsx(Button, { variant: "contained", color: "primary", onClick: () => downloadCSV(recentSearch == "channel" ? `${input}_output.csv` : `${playlistInfo.channel.split(" ").join("_")}_playlist.csv`), children: "Download Output" }) })) : (_jsx(_Fragment, {}))] })] }));
 }
