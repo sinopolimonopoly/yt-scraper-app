@@ -11,7 +11,7 @@ import { Switch } from '@mui/material';
 
 import '@fontsource/roboto';
 
-import { UploadType } from './scripts/apiScripts/playlistIdGetter';
+import { UploadType } from './scripts/apiScripts/playlistIdGetter.js';
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -650,7 +650,10 @@ export default function Menu() {
 
                 {(chanVideoList.length > 0) ? (
                     <Grid size={12} container justifyContent="center" mt={2}>
-                        <Button variant="contained" color="primary" onClick={() => downloadCSV(recentSearch == "channel" ? `${input}_output.csv`: `${playlistInfo.channel.split(" ").join("_")}_playlist.csv`)}>
+                        <Button variant="contained" color="primary" 
+                            onClick={() => downloadCSV(recentSearch == "channel" 
+                                ? `${input}_output.csv`
+                                : `${playlistInfo.channel.split(" ").join("_")}_playlist.csv`)}>
                             Download Output
                         </Button>
                     </Grid>

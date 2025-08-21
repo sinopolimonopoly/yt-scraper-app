@@ -10,7 +10,9 @@ import getPlaylistInfo from './src/scripts/mainScripts/getPlaylistInfo.js';
 import getPlaylistVideos from './src/scripts/mainScripts/getPlaylistVideos.js';
 
 const app = express();
+
 app.use(cors());
+app.options('/api', cors());
 app.use(express.json());
 
 app.listen(3001, '0.0.0.0', () => {
